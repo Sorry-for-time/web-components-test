@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "esModuleInterop": true,
+    "lib": ["ESNext", "DOM", "WebWorker"],
+    "forceConsistentCasingInFileNames": true,
+    "removeComments": false,
+    "strict": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "declaration": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "baseUrl": "./",
+    "outDir": "./target"
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["./src/scss"]
+}
