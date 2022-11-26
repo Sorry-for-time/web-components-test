@@ -106,3 +106,7 @@ dist
 # set exluce folder
 .vscode/*
 target/*
+
+# sex runtime exclue css file
+src/scss/base.css
+src/scss/base.css.map
