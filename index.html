@@ -5,15 +5,68 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WEB-COMPONENTS-TEST</title>
+    <template id="template">
+      <style>
+        .container {
+          --title-height: 26px;
+
+          display: block;
+          width: 260px;
+          height: auto;
+          border-radius: 6px;
+          overflow: hidden;
+          box-shadow: 0 4px 10px black;
+        }
+
+        .card {
+          width: 100%;
+          height: 100%;
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-template-rows: var(--title-height) calc(100% - var(--title-height));
+        }
+
+        .title {
+          background: white;
+        }
+
+        .title:hover {
+          cursor: move;
+        }
+
+        .content {
+          color: white;
+          font-size: 15px;
+          padding: 10px;
+        }
+      </style>
+
+      <div class="container">
+        <div class="card">
+          <div class="title"></div>
+          <div class="content">
+            <slot></slot>
+          </div>
+        </div>
+      </div>
+    </template>
     <style>
       @import url("./src/scss/base.css");
+
       body.hidden {
         display: none;
       }
     </style>
   </head>
   <body class="hidden">
-    <div id="app">some text</div>
+    <div id="app">
+      <header>
+        <span id="normal"></span>
+        <span id="dark"></span>
+      </header>
+      <main></main>
+      <footer></footer>
+    </div>
     <script src="./target/main.js" type="module"></script>
   </body>
 </html>
