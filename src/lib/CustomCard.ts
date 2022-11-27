@@ -15,6 +15,7 @@ export class CustomCard extends HTMLElement {
   private titleEl: HTMLElement;
   private container: HTMLElement;
   private mouseUpHandlerRecord: MOUSE_OPERATION | null = null;
+  private textEditor: HTMLElement;
 
   constructor() {
     super();
@@ -26,6 +27,7 @@ export class CustomCard extends HTMLElement {
 
     this.titleEl = this.shadowRoot?.querySelector(".title")!;
     this.container = this.shadowRoot?.querySelector(".container")!;
+    this.textEditor = this.shadowRoot?.querySelector(".content")!;
   }
 
   /**
@@ -39,6 +41,8 @@ export class CustomCard extends HTMLElement {
     this.container.style.left = "var(--x)";
     this.container.style.top = "var(--y)";
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
+    this.textEditor.addEventListener("dblclick", this.textEditorInput);
+    document.addEventListener("click", this.textEditorBlur);
   }
 
   /**
@@ -49,6 +53,10 @@ export class CustomCard extends HTMLElement {
 
     this.mouseUpHandlerRecord &&
       document.removeEventListener("mouseup", this.mouseUpHandlerRecord);
+
+    /* 移除文本编辑框的内容 */
+    this.textEditor.removeEventListener("dblclick", this.textEditorInput);
+    document.removeEventListener("click", this.textEditorBlur);
   }
 
   /**
@@ -119,5 +127,25 @@ export class CustomCard extends HTMLElement {
 
     /* 添加监听器 */
     document.addEventListener("mouseup", this.mouseUpHandlerRecord);
+  };
+
+  private textEditorInput: MOUSE_OPERATION = (ev: MouseEvent): void => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.textEditor.setAttribute("contenteditable", "true");
+    this.textEditor.focus();
+  };
+
+  private textEditorBlur: MOUSE_OPERATION = (ev: MouseEvent): void => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    // 判断目标决定是否移除光标
+    if (
+      (ev.target as CustomCard).shadowRoot?.querySelector(".content") !==
+      this.textEditor
+    ) {
+      this.textEditor.blur();
+      this.textEditor.removeAttribute("contenteditable");
+    }
   };
 }
