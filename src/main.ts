@@ -1,20 +1,17 @@
 import { formatLog } from "./utils/formatLog.js";
-import { CustomCard } from "./utils/CustomCard.js";
-customElements.define("custom-card", CustomCard);
+import { CustomCard } from "./lib/CustomCard.js";
 
 window.addEventListener("load", (): void => {
+  // 注册组件
+  customElements.define("custom-card", CustomCard);
+
   if (document.body.classList.contains("hidden")) {
     document.body.classList.remove("hidden");
     formatLog();
+
     document.body.classList.add("dark-theme");
     const themeButtons: NodeListOf<HTMLSpanElement> =
       document.querySelectorAll("#app span");
-
-    const main: HTMLElement = document.querySelector("#app main")!;
-
-    const customTag = new CustomCard();
-    customTag.textContent = "somethings you know";
-    main.appendChild(customTag);
 
     themeButtons.forEach((span: HTMLSpanElement): void => {
       span.addEventListener("click", (): void => {
