@@ -14,6 +14,7 @@ type MOUSE_OPERATION = (ev: MouseEvent) => void;
 export class CustomCard extends HTMLElement {
   private titleEl: HTMLElement;
   private container: HTMLElement;
+  private mouseUpHandlerRecord: MOUSE_OPERATION | null = null;
 
   constructor() {
     super();
@@ -45,7 +46,9 @@ export class CustomCard extends HTMLElement {
    */
   public disconnectedCallback(): void {
     document.removeEventListener("mousedown", this.mouseDownHandler);
-    document.removeEventListener("mouseup", () => {});
+
+    this.mouseUpHandlerRecord &&
+      document.removeEventListener("mouseup", this.mouseUpHandlerRecord);
   }
 
   /**
@@ -60,13 +63,15 @@ export class CustomCard extends HTMLElement {
       this.container.classList.add("active");
     }
 
-    Array.from(this.parentElement!.children).forEach((el: Element): void => {
-      (
-        (el as CustomCard).shadowRoot?.lastElementChild as HTMLDivElement
-      ).style.removeProperty("z-index");
-    });
-
-    this.container.style.setProperty("z-index", "333");
+    {
+      /* 设置活动元素的显示的优先级 */
+      Array.from(this.parentElement!.children).forEach((el: Element): void => {
+        (
+          (el as CustomCard).shadowRoot?.lastElementChild as HTMLDivElement
+        ).style.removeProperty("z-index");
+      });
+      this.container.style.setProperty("z-index", "333");
+    }
 
     const substrateX: number = ev.clientX - this.container.offsetLeft;
     const substrateY: number = ev.clientY - this.container.offsetTop;
@@ -104,11 +109,15 @@ export class CustomCard extends HTMLElement {
     };
 
     document.addEventListener("mousemove", mouseMove);
-    document.addEventListener("mouseup", (): void => {
+
+    this.mouseUpHandlerRecord = (): void => {
       if (this.container.classList.contains("active")) {
         this.container.classList.remove("active");
       }
       document.removeEventListener("mousemove", mouseMove);
-    });
+    };
+
+    /* 添加监听器 */
+    document.addEventListener("mouseup", this.mouseUpHandlerRecord);
   };
 }
