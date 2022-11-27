@@ -7,18 +7,23 @@
     <title>WEB-COMPONENTS-TEST</title>
     <template id="template">
       <style>
+        :root {
+          --deg: 0deg;
+        }
         .container {
           --title-height: 26px;
 
-          display: block;
+          position: absolute;
+          left: 0;
+          top: 0;
           width: 260px;
           height: auto;
           border-radius: 6px;
           overflow: hidden;
-          box-shadow: 0 4px 10px black;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.418);
         }
 
-        .card {
+        .container .card {
           width: 100%;
           height: 100%;
           display: grid;
@@ -27,7 +32,8 @@
         }
 
         .title {
-          background: white;
+          background: scroll no-repeat center linear-gradient(23deg, rgba(176, 19, 182, 0.247), rgba(15, 44, 172, 0.13));
+          backdrop-filter: blur(12px);
         }
 
         .title:hover {
@@ -35,9 +41,24 @@
         }
 
         .content {
-          color: white;
-          font-size: 15px;
+          font-size: 18px;
           padding: 10px;
+          user-select: none;
+          color: transparent;
+          background: scroll no-repeat center
+            linear-gradient(109.6deg, rgba(61, 245, 167, 1) 11.2%, rgba(9, 111, 224, 1) 91.1%);
+          font-weight: 600;
+          -webkit-background-clip: text;
+          animation: scroll-color 3s linear infinite;
+        }
+
+        @keyframes scroll-color {
+          from {
+            filter: hue-rotate(0deg);
+          }
+          to {
+            filter: hue-rotate(360deg);
+          }
         }
       </style>
 
@@ -64,7 +85,17 @@
         <span id="normal"></span>
         <span id="dark"></span>
       </header>
-      <main></main>
+      <main>
+        <div class="drag-view">
+          <custom-card>
+            小镇淹没在兽们无数蹄角击出的声浪中。这蹄声使我联想起从地层深处涌起的无数细小的水泡。水泡漫过路面，爬上家家户户的墙壁，就连钟塔也被它整个包笼起来。但这仅仅是暮色中的幻想，一睁眼水泡即杳然逝去。
+          </custom-card>
+
+          <custom-card>
+            建筑物外面刮风的声音似乎传到我的耳畔。是冬天的寒风在镇上往来流窜。风绕过高高耸立的钟塔，穿过桥下，摇曳河岸排列的垂柳。它拂动森林无数的枝条，掠过草原，吹响厂区的电线，拍打门扇。独角兽们在风中冻僵，人们在家里悄然屏息。我合上眼睑，在脑海中推出镇上的诸多场景：河中沙洲，西墙角楼，林中电站，老人们所坐官舍门前的阳光，河中水深流缓之处，独角兽们俯身饮水，运河石阶上随风起伏的青青夏草。此外还记得电站后面的小块农田，旧兵营西面的草地，东面森林围墙脚下残存的房屋和古井。
+          </custom-card>
+        </div>
+      </main>
       <footer></footer>
     </div>
     <script src="./target/main.js" type="module"></script>
