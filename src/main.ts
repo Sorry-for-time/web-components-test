@@ -1,31 +1,18 @@
 import { formatLog } from "./utils/formatLog.js";
 import { CustomCard } from "./lib/CustomCard.js";
+import { ContextMenu } from "./lib/ContextMenu.js";
+
+import { switchTheme } from "./dom-operation/switch-theme.js";
 
 window.addEventListener("load", (): void => {
+  switchTheme();
   // 注册组件
   customElements.define("custom-card", CustomCard);
+  customElements.define("context-menu", ContextMenu);
 
   if (document.body.classList.contains("hidden")) {
     document.body.classList.remove("hidden");
     formatLog();
-
     document.body.classList.add("dark-theme");
-    const themeButtons: NodeListOf<HTMLSpanElement> =
-      document.querySelectorAll("#app span");
-
-    themeButtons.forEach((span: HTMLSpanElement): void => {
-      span.addEventListener("click", (): void => {
-        if (span.id === "normal") {
-          document.body.classList.remove("dark-theme");
-          if (!document.body.classList.contains("normal-theme")) {
-            document.body.classList.add("normal-theme");
-          }
-        } else {
-          document.body.classList.remove("normal-theme");
-          if (!document.body.classList.contains("dark-theme"))
-            document.body.classList.add("dark-theme");
-        }
-      });
-    });
   }
 });
