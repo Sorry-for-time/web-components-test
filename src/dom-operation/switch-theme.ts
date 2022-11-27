@@ -15,21 +15,25 @@ export function switchTheme(): void {
         el.classList.remove("active");
       });
 
-      /* 如果选中的为白天模式 */
-      if (span.id === "normal") {
-        document.body.classList.remove("dark-theme");
-        if (!document.body.classList.contains("normal-theme")) {
+      /* 清空所有主题 */
+      document.body.classList.remove(
+        ...document.body.classList.toString().split(" ")
+      );
+      switch (span.id) {
+        case "normal":
           document.body.classList.add("normal-theme");
-          // 为按钮添加激活样式
-          span.classList.add("active");
-        }
-      } else {
-        /* 如果选中的为暗色模式 */
-        document.body.classList.remove("normal-theme");
-        if (!document.body.classList.contains("dark-theme"))
+          break;
+        case "dark":
           document.body.classList.add("dark-theme");
-        span.classList.add("active");
+          break;
+        case "special":
+          document.body.classList.add("special-theme");
+          break;
+        default:
+          document.body.classList.add("normal");
+          break;
       }
+      span.classList.add("active");
     });
   });
 }
