@@ -51,6 +51,16 @@
           animation: scroll-color 5s linear infinite;
         }
 
+        .content:focus-within {
+          caret-color: white;
+          outline: none;
+          background: rgba(39, 39, 39, 0.616);
+          color: rgb(230, 230, 230);
+          animation: none;
+          background-clip: none;
+          -webkit-background-clip: none;
+        }
+
         @keyframes scroll-color {
           from {
             filter: hue-rotate(0deg);
