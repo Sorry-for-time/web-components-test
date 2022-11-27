@@ -28,6 +28,14 @@ export class CustomCard extends HTMLElement {
     this.titleEl = this.shadowRoot?.querySelector(".title")!;
     this.container = this.shadowRoot?.querySelector(".container")!;
     this.textEditor = this.shadowRoot?.querySelector(".content")!;
+
+    /* 在节点加载成功后替换 slot 为文本节点 */
+    const newTextNode = document.createTextNode(this.lastChild!.textContent!);
+    this.textEditor.replaceChild(
+      newTextNode,
+      this.textEditor.querySelector("slot")!
+    );
+    //
   }
 
   /**
