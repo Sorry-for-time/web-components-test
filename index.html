@@ -70,6 +70,60 @@
         </div>
       </div>
     </template>
+
+    <template id="context-menu">
+      <style>
+        .wrapper {
+          --text-color: rgb(255, 255, 255);
+          overflow: hidden;
+
+          box-sizing: border-box;
+          user-select: none;
+          z-index: 23;
+          position: absolute;
+          width: 240px;
+          will-change: transform;
+          border-radius: 8px;
+          box-shadow: 0 0 3px black;
+          border: 1px solid rgba(255, 255, 255, 0.205);
+          background: scroll no-repeat center linear-gradient(20deg, rgba(0, 255, 255, 0.336), rgba(91, 14, 114, 0.144));
+          backdrop-filter: blur(12px);
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+
+        .wrapper.hide {
+          display: none;
+        }
+
+        p {
+          flex: 100%;
+          margin: 3px;
+          padding: 4px 8px;
+          color: var(--text-color);
+          border-radius: 5px;
+          transition: all 200ms ease-out;
+        }
+
+        P:nth-child(3) {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.205);
+        }
+
+        p:hover {
+          background-color: rgba(240, 248, 255, 0.336);
+        }
+      </style>
+
+      <!-- 菜单按钮 -->
+      <div class="wrapper hide">
+        <p id="add">添加</p>
+        <p id="delete">删除</p>
+        <p id="editor">编辑</p>
+        <p id="export">导出图片</p>
+      </div>
+    </template>
+
     <style>
       @import url("./src/scss/base.css");
 
@@ -79,10 +133,13 @@
     </style>
   </head>
   <body class="hidden">
+    <!-- 自定义菜单 -->
+    <context-menu></context-menu>
+
     <div id="app">
       <header>
         <span id="normal"></span>
-        <span id="dark"></span>
+        <span id="dark" class="active"></span>
       </header>
       <main>
         <div class="drag-view">
@@ -93,10 +150,11 @@
           <custom-card>
             到南水潭时，雪下得又急又猛，几乎让人透不过气。看这势头，仿佛天空本身都变成一枚枚碎片朝地面狂泻不止。雪也落在水潭，被深得近乎骇人的蓝色潭面吮吸进去。在这染成一色纯白的大地上，惟独水潭圆圆地敞开俨然巨大眸子的洞穴。
           </custom-card>
-          <custom-card>风评浪静的每一天都是奇迹</custom-card>
         </div>
       </main>
-      <footer></footer>
+      <footer>
+        <h1>DESIGNED BY SIX WALNUTS</h1>
+      </footer>
     </div>
     <script src="./target/main.js" type="module"></script>
   </body>
