@@ -70,7 +70,7 @@ export class CustomCard extends HTMLElement {
           (el as CustomCard).shadowRoot?.lastElementChild as HTMLDivElement
         ).style.removeProperty("z-index");
       });
-      this.container.style.setProperty("z-index", "333");
+      this.container.style.setProperty("z-index", "3");
     }
 
     const substrateX: number = ev.clientX - this.container.offsetLeft;
