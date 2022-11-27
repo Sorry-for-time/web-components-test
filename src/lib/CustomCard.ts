@@ -16,6 +16,10 @@ export class CustomCard extends HTMLElement {
   private container: HTMLElement;
   private mouseUpHandlerRecord: MOUSE_OPERATION | null = null;
   private textEditor: HTMLElement;
+  private defaultPositionBucket: { left: string; top: string } = {
+    left: "0px",
+    top: "0px",
+  };
 
   constructor() {
     super();
@@ -42,8 +46,9 @@ export class CustomCard extends HTMLElement {
    * 在 webComponent 挂载到页面上时绑定组件内部的监听器
    */
   public connectedCallback(): void {
-    this.container.style.setProperty("--x", "0px");
-    this.container.style.setProperty("--y", "0px");
+    console.log("connectedCallback");
+    this.container.style.setProperty("--x", this.defaultPositionBucket.left);
+    this.container.style.setProperty("--y", this.defaultPositionBucket.top);
     // this.container.style.transform = "translate(var(--x), var(--y))";
     // this.container.style.willChange = "transform";
     this.container.style.left = "var(--x)";
@@ -57,6 +62,8 @@ export class CustomCard extends HTMLElement {
    * 在 webComponent 实例从真实页面上卸载时解绑内部的监听器
    */
   public disconnectedCallback(): void {
+    console.log("disconnectedCallback");
+
     document.removeEventListener("mousedown", this.mouseDownHandler);
 
     this.mouseUpHandlerRecord &&
@@ -156,4 +163,26 @@ export class CustomCard extends HTMLElement {
       this.textEditor.removeAttribute("contenteditable");
     }
   };
+
+  static get observedAttributes(): Array<string> {
+    return ["left", "top"];
+  }
+
+  public attributeChangedCallback(
+    name: string,
+    oldValue: string,
+    newValue: string
+  ): void {
+    console.log(name, oldValue, newValue);
+    switch (name) {
+      case "left":
+        this.defaultPositionBucket.left = newValue;
+        break;
+      case "top":
+        this.defaultPositionBucket.top = newValue;
+        break;
+      default:
+        break;
+    }
+  }
 }
