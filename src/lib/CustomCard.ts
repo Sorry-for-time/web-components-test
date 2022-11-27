@@ -12,19 +12,17 @@ type MOUSE_OPERATION = (ev: MouseEvent) => void;
  * @extends {HTMLElement}
  */
 export class CustomCard extends HTMLElement {
-  private fragment: DocumentFragment;
   private titleEl: HTMLElement;
   private container: HTMLElement;
 
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
-    // 初始化操作
-    this.fragment = (
-      document.querySelector("#template") as HTMLTemplateElement
-    ).content.cloneNode(true) as DocumentFragment;
+    this.attachShadow({ mode: "open" }).appendChild(
+      (
+        document.querySelector("#template") as HTMLTemplateElement
+      ).content.cloneNode(true)
+    );
 
-    this.shadowRoot?.appendChild(this.fragment);
     this.titleEl = this.shadowRoot?.querySelector(".title")!;
     this.container = this.shadowRoot?.querySelector(".container")!;
   }
@@ -35,24 +33,47 @@ export class CustomCard extends HTMLElement {
   public connectedCallback(): void {
     this.container.style.setProperty("--x", "0px");
     this.container.style.setProperty("--y", "0px");
-    this.container.style.transform = "translate(var(--x), var(--y))";
+    // this.container.style.transform = "translate(var(--x), var(--y))";
+    // this.container.style.willChange = "transform";
+    this.container.style.left = "var(--x)";
+    this.container.style.top = "var(--y)";
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
   }
 
   /**
    * 在 webComponent 实例从真实页面上卸载时解绑内部的监听器
    */
-  public disconnectedCallback(): void {}
+  public disconnectedCallback(): void {
+    document.removeEventListener("mousedown", this.mouseDownHandler);
+    document.removeEventListener("mouseup", () => {});
+  }
 
   /**
    * 鼠标主键按下操作
    * @param ev 鼠标主键按下事件
    */
   private mouseDownHandler: MOUSE_OPERATION = (ev: MouseEvent): void => {
-    let substrateX: number = ev.clientX - this.titleEl.offsetLeft;
-    let substrateY: number = ev.clientY - this.titleEl.offsetTop;
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    if (!this.container.classList.contains("active")) {
+      this.container.classList.add("active");
+    }
+
+    Array.from(this.parentElement!.children).forEach((el: Element): void => {
+      (
+        (el as CustomCard).shadowRoot?.lastElementChild as HTMLDivElement
+      ).style.removeProperty("z-index");
+    });
+
+    this.container.style.setProperty("z-index", "333");
+
+    const substrateX: number = ev.clientX - this.container.offsetLeft;
+    const substrateY: number = ev.clientY - this.container.offsetTop;
 
     const mouseMove: MOUSE_OPERATION = (mv: MouseEvent): void => {
+      ev.preventDefault();
+      ev.stopPropagation();
       let applyLeft: number = mv.clientX - substrateX;
       let applyTop: number = mv.clientY - substrateY;
 
@@ -64,15 +85,14 @@ export class CustomCard extends HTMLElement {
         applyTop = 0;
       }
       if (
-        applyLeft >
+        applyLeft >=
         this.parentElement!.clientWidth - this.container.clientWidth
       ) {
         applyLeft =
           this.parentElement!.clientWidth - this.container.clientWidth;
       }
-
       if (
-        applyTop >
+        applyTop >=
         this.parentElement!.clientHeight - this.container.clientHeight
       ) {
         applyTop =
@@ -85,11 +105,10 @@ export class CustomCard extends HTMLElement {
 
     document.addEventListener("mousemove", mouseMove);
     document.addEventListener("mouseup", (): void => {
+      if (this.container.classList.contains("active")) {
+        this.container.classList.remove("active");
+      }
       document.removeEventListener("mousemove", mouseMove);
-    });
-
-    this.titleEl.addEventListener("mouseup", (): void => {
-      window.removeEventListener("mousemove", mouseMove);
     });
   };
 }
