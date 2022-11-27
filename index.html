@@ -7,20 +7,22 @@
     <title>WEB-COMPONENTS-TEST</title>
     <template id="template">
       <style>
-        :root {
-          --deg: 0deg;
+        .active {
+          cursor: move;
         }
+
         .container {
           --title-height: 26px;
-
           position: absolute;
-          left: 0;
-          top: 0;
+
+          display: block;
           width: 260px;
           height: auto;
           border-radius: 6px;
           overflow: hidden;
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.418);
+          background: scroll no-repeat center linear-gradient(rgba(0, 255, 255, 0.205), rgba(128, 0, 128, 0.247));
+          backdrop-filter: blur(12px);
         }
 
         .container .card {
@@ -36,10 +38,6 @@
           backdrop-filter: blur(12px);
         }
 
-        .title:hover {
-          cursor: move;
-        }
-
         .content {
           font-size: 18px;
           padding: 10px;
@@ -48,8 +46,9 @@
           background: scroll no-repeat center
             linear-gradient(109.6deg, rgba(61, 245, 167, 1) 11.2%, rgba(9, 111, 224, 1) 91.1%);
           font-weight: 600;
+          background-clip: text;
           -webkit-background-clip: text;
-          animation: scroll-color 3s linear infinite;
+          animation: scroll-color 5s linear infinite;
         }
 
         @keyframes scroll-color {
@@ -92,8 +91,9 @@
           </custom-card>
 
           <custom-card>
-            建筑物外面刮风的声音似乎传到我的耳畔。是冬天的寒风在镇上往来流窜。风绕过高高耸立的钟塔，穿过桥下，摇曳河岸排列的垂柳。它拂动森林无数的枝条，掠过草原，吹响厂区的电线，拍打门扇。独角兽们在风中冻僵，人们在家里悄然屏息。我合上眼睑，在脑海中推出镇上的诸多场景：河中沙洲，西墙角楼，林中电站，老人们所坐官舍门前的阳光，河中水深流缓之处，独角兽们俯身饮水，运河石阶上随风起伏的青青夏草。此外还记得电站后面的小块农田，旧兵营西面的草地，东面森林围墙脚下残存的房屋和古井。
+            到南水潭时，雪下得又急又猛，几乎让人透不过气。看这势头，仿佛天空本身都变成一枚枚碎片朝地面狂泻不止。雪也落在水潭，被深得近乎骇人的蓝色潭面吮吸进去。在这染成一色纯白的大地上，惟独水潭圆圆地敞开俨然巨大眸子的洞穴。
           </custom-card>
+          <custom-card>风评浪静的每一天都是奇迹</custom-card>
         </div>
       </main>
       <footer></footer>
