@@ -1,6 +1,7 @@
 :root {
   --light-mode-bgc: hsl(219, 18%, 62%);
   --dark-mode-bgc: #232526;
+  --special-mode-bgc: hsl(249, 57%, 31%);
 
   --header-height: 40px;
   --footer-height: 100px;
@@ -25,7 +26,8 @@
 }
 
 .normal-theme,
-.dark-theme {
+.dark-theme,
+.special-theme {
   transition: all 200ms ease-out;
 }
 
@@ -42,6 +44,13 @@
   background: var(--dark-mode-bgc);
   main {
     background: scroll no-repeat center url("../img/dark.png");
+    background-size: cover;
+  }
+}
+.special-theme {
+  background: var(--special-mode-bgc);
+  main {
+    background: scroll no-repeat center url("../img/special.jpg");
     background-size: cover;
   }
 }
@@ -95,6 +104,10 @@ body {
 
       &:first-child {
         background: var(--light-mode-bgc);
+      }
+
+      &:nth-child(2) {
+        background: var(--special-mode-bgc);
       }
 
       &:last-child {
