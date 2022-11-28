@@ -47,12 +47,12 @@ export class CustomCard extends HTMLElement {
    */
   public connectedCallback(): void {
     console.log("connectedCallback");
-    this.container.style.setProperty("--x", this.defaultPositionBucket.left);
-    this.container.style.setProperty("--y", this.defaultPositionBucket.top);
+    this.container.style.left = this.defaultPositionBucket.left;
+    this.container.style.top = this.defaultPositionBucket.top;
+
     // this.container.style.transform = "translate(var(--x), var(--y))";
-    // this.container.style.willChange = "transform";
-    this.container.style.left = "var(--x)";
-    this.container.style.top = "var(--y)";
+    // 通知浏览器将快变化的属性
+    this.container.style.willChange = "left, top, z-index";
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
     this.textEditor.addEventListener("dblclick", this.textEditorInput);
     document.addEventListener("click", this.textEditorBlur);
@@ -127,8 +127,8 @@ export class CustomCard extends HTMLElement {
           this.parentElement!.clientHeight - this.container.clientHeight;
       }
 
-      this.container.style.setProperty("--x", `${applyLeft}px`);
-      this.container.style.setProperty("--y", `${applyTop}px`);
+      this.container.style.left = `${applyLeft}px`;
+      this.container.style.top = `${applyTop}px`;
     };
 
     document.addEventListener("mousemove", mouseMove);
