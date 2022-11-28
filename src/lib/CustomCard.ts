@@ -52,7 +52,7 @@ export class CustomCard extends HTMLElement {
 
     /* 在节点加载成功后替换 slot 为文本节点 */
     const newTextNode: Text = document.createTextNode(
-      this.lastChild!.textContent!
+      this.lastChild?.textContent || ""
     );
     this.textEditor.replaceChild(
       newTextNode,
@@ -68,6 +68,8 @@ export class CustomCard extends HTMLElement {
   connectedCallback(): void {
     this.container.style.left = this.defaultPositionBucket.left;
     this.container.style.top = this.defaultPositionBucket.top;
+    this.container.style.setProperty("--weight", "3");
+    this.container.style.zIndex = "var(--weight)";
     // 通知浏览器将快变化的属性
     this.container.style.willChange = "left, top, z-index";
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
@@ -95,14 +97,13 @@ export class CustomCard extends HTMLElement {
     /* 移除文本编辑框的内容 */
     this.textEditor.removeEventListener("dblclick", this.textEditorInput);
     document.removeEventListener("click", this.textEditorBlur);
+    this.removeEventListener("click", this.setCurrentPriorityDisplay);
 
     CustomCard.debugBucket.open &&
       console.log(
         `${this._versionID} disconnected, record ${CustomCard.debugBucket
           .counter--}`
       );
-
-    this.removeEventListener("click", this.setCurrentPriorityDisplay);
   }
 
   /**
@@ -200,9 +201,9 @@ export class CustomCard extends HTMLElement {
       Array.from(this.parentElement!.children).forEach((el: Element): void => {
         (
           (el as CustomCard).shadowRoot?.lastElementChild as HTMLDivElement
-        ).style.removeProperty("z-index");
+        ).style.setProperty("--weight", "unset");
       });
-      this.container.style.setProperty("z-index", "3");
+      this.container.style.setProperty("--weight", "3");
     }
   };
 
