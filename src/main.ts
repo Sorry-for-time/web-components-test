@@ -7,6 +7,4 @@ window.addEventListener("load", (): void => {
   // 注册组件
   customElements.define("custom-card", CustomCard);
   customElements.define("context-menu", ContextMenu);
-
-  const customCard: CustomCard = document.querySelector("custom-card")!;
 });
