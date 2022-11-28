@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WEB-COMPONENTS-TEST</title>
+    <!-- 自定义卡片模板 -->
     <template id="template">
       <style>
         .active {
@@ -36,7 +37,8 @@
         }
 
         .title {
-          background: scroll no-repeat center linear-gradient(23deg, rgba(194, 115, 197, 0.589), rgba(68, 96, 223, 0.582));
+          background: scroll no-repeat center
+            linear-gradient(23deg, rgba(194, 115, 197, 0.589), rgba(68, 96, 223, 0.582));
           backdrop-filter: blur(12px);
         }
 
@@ -83,6 +85,7 @@
       </div>
     </template>
 
+    <!-- 自定义菜单模板 -->
     <template id="context-menu">
       <style>
         .wrapper {
@@ -150,9 +153,9 @@
 
     <div id="app">
       <header>
-        <span id="normal"></span>
-        <span id="special"></span>
-        <span id="dark" class="active"></span>
+        <span id="normal-theme"></span>
+        <span id="special-theme"></span>
+        <span id="dark-theme"></span>
       </header>
       <main>
         <div class="drag-view">
