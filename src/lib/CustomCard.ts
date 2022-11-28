@@ -51,7 +51,9 @@ export class CustomCard extends HTMLElement {
     this.textEditor = this.shadowRoot?.querySelector(".content")!;
 
     /* 在节点加载成功后替换 slot 为文本节点 */
-    const newTextNode = document.createTextNode(this.lastChild!.textContent!);
+    const newTextNode: Text = document.createTextNode(
+      this.lastChild!.textContent!
+    );
     this.textEditor.replaceChild(
       newTextNode,
       this.textEditor.querySelector("slot")!
@@ -71,8 +73,9 @@ export class CustomCard extends HTMLElement {
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
     this.textEditor.addEventListener("dblclick", this.textEditorInput);
     document.addEventListener("click", this.textEditorBlur);
-    this._createCostTime = performance.now() - this._createCostTime;
+    this.addEventListener("click", this.setCurrentPriorityDisplay);
 
+    this._createCostTime = performance.now() - this._createCostTime;
     CustomCard.debugBucket.open &&
       console.log(
         `${this.versionId} connected, record: ${++CustomCard.debugBucket
@@ -98,6 +101,8 @@ export class CustomCard extends HTMLElement {
         `${this._versionID} disconnected, record ${CustomCard.debugBucket
           .counter--}`
       );
+
+    this.removeEventListener("click", this.setCurrentPriorityDisplay);
   }
 
   /**
@@ -110,16 +115,6 @@ export class CustomCard extends HTMLElement {
 
     if (!this.container.classList.contains("active")) {
       this.container.classList.add("active");
-    }
-
-    {
-      /* 设置活动元素的显示的优先级 */
-      Array.from(this.parentElement!.children).forEach((el: Element): void => {
-        (
-          (el as CustomCard).shadowRoot?.lastElementChild as HTMLDivElement
-        ).style.removeProperty("z-index");
-      });
-      this.container.style.setProperty("z-index", "3");
     }
 
     const substrateX: number = ev.clientX - this.container.offsetLeft;
@@ -187,6 +182,27 @@ export class CustomCard extends HTMLElement {
     ) {
       this.textEditor.blur();
       this.textEditor.removeAttribute("contenteditable");
+    }
+  };
+
+  /**
+   * @description 设置当前元素的显示的优先级为最高
+   * @private
+   * @type {MOUSE_OPERATION}
+   * @memberof CustomCard
+   */
+  private setCurrentPriorityDisplay: MOUSE_OPERATION = (
+    ev: MouseEvent
+  ): void => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    {
+      Array.from(this.parentElement!.children).forEach((el: Element): void => {
+        (
+          (el as CustomCard).shadowRoot?.lastElementChild as HTMLDivElement
+        ).style.removeProperty("z-index");
+      });
+      this.container.style.setProperty("z-index", "3");
     }
   };
 
