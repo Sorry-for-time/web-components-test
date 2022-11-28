@@ -4,9 +4,14 @@
  * @date 2022-11-27 21:11:03
  * @export
  */
-export function switchTheme(): void {
+export function useSwitchTheme(): void {
   const themeButtons: NodeListOf<HTMLSpanElement> =
     document.querySelectorAll("#app span");
+
+  /* 初始化的时候移除掉 body 的隐藏样式 */
+  document.body.classList.remove("hidden");
+  /* 默认使用 dark-theme */
+  document.body.classList.add("dark-theme");
 
   themeButtons.forEach((span: HTMLSpanElement): void => {
     // 清除所有的选中激活样式
