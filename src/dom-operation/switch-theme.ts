@@ -1,18 +1,76 @@
 /**
+ * 定义主题颜色模式字符串
+ */
+const enum THEMES {
+  "normal" = "normal-theme",
+  "dark" = "dark-theme",
+  "special" = "special-theme",
+}
+
+/**
  * @description 切换主题样式
  * @author Shalling <3330689546@qq.com>
  * @date 2022-11-27 21:11:03
  * @export
  */
 export function useSwitchTheme(): void {
+  /* 取得所有的主题颜色切换按钮 */
   const themeButtons: NodeListOf<HTMLSpanElement> =
     document.querySelectorAll("#app span");
 
-  /* 初始化的时候移除掉 body 的隐藏样式 */
-  document.body.classList.remove("hidden");
-  /* 默认使用 dark-theme */
-  document.body.classList.add("dark-theme");
+  const storedThemeMode: string | null = localStorage.getItem("theme-mode");
 
+  // 判断 localStorage 里是否存储了自定义的主题标识
+  if (storedThemeMode) {
+    let themeIDTag: string = "";
+    switch (storedThemeMode) {
+      case THEMES.normal:
+        themeIDTag = THEMES.normal;
+        break;
+      case THEMES.dark:
+        themeIDTag = THEMES.dark;
+        break;
+      case THEMES.special:
+        themeIDTag = THEMES.special;
+        break;
+      default:
+        break;
+    }
+    document.body.classList.add(themeIDTag);
+    // 设置激对应按钮的激活样式
+    themeButtons.forEach((e: HTMLSpanElement): void => {
+      if (e.id === storedThemeMode) {
+        e.classList.add("active");
+      }
+    });
+  }
+  // 如果本地未指定使用的主题模式, 那么判断系统所处的颜色模式
+  else {
+    /* 判断当前系统默认颜色是否处于暗色模式 */
+    const colorMode: boolean = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    if (colorMode) {
+      document.body.classList.add(THEMES.dark);
+      themeButtons.forEach((e: HTMLSpanElement): void => {
+        if (e.id === "dark") {
+          e.classList.add("active");
+        }
+      });
+    } else {
+      document.body.classList.add(THEMES.normal);
+      themeButtons.forEach((e: HTMLSpanElement): void => {
+        if (e.id === "dark") {
+          e.classList.add("active");
+        }
+      });
+    }
+  }
+
+  // 初始化的时候移除掉 body 的隐藏样式
+  document.body.classList.remove("hidden");
+
+  // 点击按钮的时候切换主题颜色模式
   themeButtons.forEach((span: HTMLSpanElement): void => {
     // 清除所有的选中激活样式
     span.addEventListener("click", (): void => {
@@ -24,21 +82,24 @@ export function useSwitchTheme(): void {
       document.body.classList.remove(
         ...document.body.classList.toString().split(" ")
       );
+      let spanThemeStr: string = "";
       switch (span.id) {
-        case "normal":
-          document.body.classList.add("normal-theme");
+        case THEMES.normal:
+          spanThemeStr = THEMES.normal;
           break;
-        case "dark":
-          document.body.classList.add("dark-theme");
+        case THEMES.dark:
+          spanThemeStr = THEMES.dark;
           break;
-        case "special":
-          document.body.classList.add("special-theme");
+        case THEMES.special:
+          spanThemeStr = THEMES.special;
           break;
         default:
-          document.body.classList.add("normal");
+          /* 除非非法修改, 不然应该不会有什么问题 */
           break;
       }
+      document.body.classList.add(spanThemeStr);
       span.classList.add("active");
+      localStorage.setItem("theme-mode", spanThemeStr);
     });
   });
 }
