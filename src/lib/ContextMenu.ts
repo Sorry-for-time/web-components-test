@@ -18,7 +18,6 @@ export class ContextMenu extends HTMLElement {
     );
 
     this.container = this.shadowRoot?.querySelector(".wrapper")!;
-    console.log(this.container);
   }
 
   public connectedCallback(): void {

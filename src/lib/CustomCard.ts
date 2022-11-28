@@ -170,10 +170,9 @@ export class CustomCard extends HTMLElement {
 
   public attributeChangedCallback(
     name: string,
-    oldValue: string,
+    _oldValue: string,
     newValue: string
   ): void {
-    console.log(name, oldValue, newValue);
     switch (name) {
       case "left":
         this.defaultPositionBucket.left = newValue;
