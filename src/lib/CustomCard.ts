@@ -5,20 +5,37 @@ type MOUSE_OPERATION = (ev: MouseEvent) => void;
 
 /**
  * @description 自定义卡片组件
- * @author Shalling <3330689546@qq.com>
- * @date 2022-11-27 00:11:08
  * @export
  * @class CustomCard
  * @extends {HTMLElement}
  */
 export class CustomCard extends HTMLElement {
-  private titleEl: HTMLElement;
+  /* 组件上的真实 dom 结构引用记录 */
   private container: HTMLElement;
-  private mouseUpHandlerRecord: MOUSE_OPERATION | null = null;
+  private titleEl: HTMLElement;
   private textEditor: HTMLElement;
+
+  /* 监听器函数引用记录 */
+  private mouseUpHandlerRecord: MOUSE_OPERATION | null = null;
+
+  /* 每个实例自身的唯一标识符 */
+  private readonly _versionID: string = crypto.randomUUID().substring(0, 16);
+
+  /* 组件创建所消耗的时间(微秒精度) */
+  private _createCostTime: number = performance.now();
+
   private defaultPositionBucket: { left: string; top: string } = {
     left: "0px",
     top: "0px",
+  };
+
+  /* 用于记录挂载和卸载的数量, 方便进行 debug, 分析记录等 */
+  public static debugBucket: {
+    open: boolean /* 是否打开全局的 log 日志输出 */;
+    counter: number /* 所有此类的实例挂载到页面上的数量 */;
+  } = {
+    open: false,
+    counter: 0,
   };
 
   constructor() {
@@ -39,31 +56,34 @@ export class CustomCard extends HTMLElement {
       newTextNode,
       this.textEditor.querySelector("slot")!
     );
-    //
+    // 记录创建耗时
+    this._createCostTime = performance.now() - this._createCostTime;
   }
 
   /**
    * 在 webComponent 挂载到页面上时绑定组件内部的监听器
    */
-  public connectedCallback(): void {
-    console.log("connectedCallback");
+  connectedCallback(): void {
     this.container.style.left = this.defaultPositionBucket.left;
     this.container.style.top = this.defaultPositionBucket.top;
-
-    // this.container.style.transform = "translate(var(--x), var(--y))";
     // 通知浏览器将快变化的属性
     this.container.style.willChange = "left, top, z-index";
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
     this.textEditor.addEventListener("dblclick", this.textEditorInput);
     document.addEventListener("click", this.textEditorBlur);
+    this._createCostTime = performance.now() - this._createCostTime;
+
+    CustomCard.debugBucket.open &&
+      console.log(
+        `${this.versionId} connected, record: ${++CustomCard.debugBucket
+          .counter}`
+      );
   }
 
   /**
-   * 在 webComponent 实例从真实页面上卸载时解绑内部的监听器
+   * 在组件实例从真实页面上卸载时解绑内部的监听器
    */
-  public disconnectedCallback(): void {
-    console.log("disconnectedCallback");
-
+  disconnectedCallback(): void {
     document.removeEventListener("mousedown", this.mouseDownHandler);
 
     this.mouseUpHandlerRecord &&
@@ -72,6 +92,12 @@ export class CustomCard extends HTMLElement {
     /* 移除文本编辑框的内容 */
     this.textEditor.removeEventListener("dblclick", this.textEditorInput);
     document.removeEventListener("click", this.textEditorBlur);
+
+    CustomCard.debugBucket.open &&
+      console.log(
+        `${this._versionID} disconnected, record ${CustomCard.debugBucket
+          .counter--}`
+      );
   }
 
   /**
@@ -168,7 +194,13 @@ export class CustomCard extends HTMLElement {
     return ["left", "top"];
   }
 
-  public attributeChangedCallback(
+  /**
+   * 属性监听器(这个可选项只会在通过字面量在第一次渲染到页面上时产生效果)
+   * @param name 属性名称
+   * @param _oldValue 旧值
+   * @param newValue 新值
+   */
+  attributeChangedCallback(
     name: string,
     _oldValue: string,
     newValue: string
@@ -183,5 +215,25 @@ export class CustomCard extends HTMLElement {
       default:
         break;
     }
+  }
+
+  /**
+   * @description 实例组件的唯一标识码
+   * @readonly
+   * @type {string}
+   * @memberof CustomCard
+   */
+  public get versionId(): string {
+    return this._versionID;
+  }
+
+  /**
+   * @description 组件创建的时间
+   * @readonly
+   * @type {number}
+   * @memberof CustomCard
+   */
+  public get createCostTime(): number {
+    return this._createCostTime;
   }
 }

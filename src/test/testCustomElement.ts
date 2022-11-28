@@ -1,0 +1,19 @@
+import { CustomCard } from "src/lib/CustomCard.js";
+import { iterableConstructorBackItemByDelay } from "../utils/iterableObjDelayBackItem.js";
+
+export async function testCustomElement() {
+  const dragView: HTMLDivElement = document.querySelector(".drag-view")!;
+  const customCards: Array<CustomCard> = Array.from(
+    document.querySelectorAll("custom-card")
+  );
+  for await (const v of iterableConstructorBackItemByDelay(customCards)) {
+    dragView.removeChild(v as HTMLElement);
+  }
+
+  for await (const v of iterableConstructorBackItemByDelay(
+    customCards,
+    (): number => Math.random() * 1000
+  )) {
+    dragView.appendChild(v as HTMLElement);
+  }
+}
