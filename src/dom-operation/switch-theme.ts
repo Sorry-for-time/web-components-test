@@ -34,12 +34,13 @@ export function useSwitchTheme(): void {
         themeIDTag = THEMES.special;
         break;
       default:
+        themeIDTag = THEMES.normal;
         break;
     }
     document.body.classList.add(themeIDTag);
     // 设置激对应按钮的激活样式
     themeButtons.forEach((e: HTMLSpanElement): void => {
-      if (e.id === storedThemeMode) {
+      if (e.id === themeIDTag) {
         e.classList.add("active");
       }
     });
@@ -53,14 +54,14 @@ export function useSwitchTheme(): void {
     if (colorMode) {
       document.body.classList.add(THEMES.dark);
       themeButtons.forEach((e: HTMLSpanElement): void => {
-        if (e.id === "dark") {
+        if (e.id === THEMES.dark) {
           e.classList.add("active");
         }
       });
     } else {
       document.body.classList.add(THEMES.normal);
       themeButtons.forEach((e: HTMLSpanElement): void => {
-        if (e.id === "dark") {
+        if (e.id === THEMES.normal) {
           e.classList.add("active");
         }
       });
