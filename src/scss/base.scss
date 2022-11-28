@@ -1,7 +1,7 @@
 :root {
   --light-mode-bgc: hsl(219, 18%, 62%);
-  --dark-mode-bgc: #232526;
-  --special-mode-bgc: hsl(249, 57%, 31%);
+  --dark-mode-bgc: hsl(0, 0%, 12%);
+  --special-mode-bgc: hsl(32, 41%, 16%);
 
   --header-height: 40px;
   --footer-height: 100px;
@@ -16,7 +16,7 @@
 
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: rgba(240, 248, 255, 0.39);
+  background-color: hsla(208, 100%, 97%, 0.39);
 }
 
 * {
@@ -77,11 +77,11 @@ body {
 
   header,
   footer {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.267);
+    box-shadow: 0 0 5px hsla(0, 0%, 0%, 0.267);
   }
 
   header {
-    background-color: rgba(240, 248, 255, 0.315);
+    background-color: hsla(0, 0%, 65%, 0.082);
     display: flex;
     align-items: center;
     column-gap: 10px;
@@ -97,8 +97,8 @@ body {
       &:hover,
       &.active {
         transform: scale(1.1);
-        background-color: 0 0 4px white;
-        border: 2px solid rgb(210, 207, 212);
+        background-color: 0 0 4px hsl(0, 0%, 100%);
+        border: 2px solid hsl(276, 5%, 82%);
         cursor: pointer;
       }
 
@@ -126,7 +126,7 @@ body {
       margin: 10px;
       width: calc(100% - 20px);
       height: calc(100% - 20px);
-      border: 1px solid rgba(245, 222, 179, 0.514);
+      border: 1px solid hsla(39, 77%, 83%, 0.514);
       border-radius: 8px;
     }
   }
@@ -143,8 +143,8 @@ body {
       background: scroll no-repeat center
         linear-gradient(
           109.6deg,
-          rgba(61, 245, 167, 1) 11.2%,
-          rgba(9, 111, 224, 1) 91.1%
+          hsl(155, 90%, 60%) 11.2%,
+          hsl(212, 92%, 46%) 91.1%
         );
       font-weight: 600;
       font-size: 40px;
