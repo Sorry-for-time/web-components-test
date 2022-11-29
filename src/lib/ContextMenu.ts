@@ -88,33 +88,35 @@ export class ContextMenu extends HTMLElement implements WebComponentDefine {
     /* 取得点击的目标元素 */
     const target: HTMLParagraphElement = ev.target as HTMLParagraphElement;
     switch (target.id) {
+      // 添加新的卡片
       case CONTEXT_MENU_ITEM.ADD:
         const newCard: CustomCard = new CustomCard();
         let cardWidth: number = 260,
           cardHeight: number = 70;
-
         let realLeft: number = this.clickPosition.left,
           realTop: number = this.clickPosition.top;
-
+        // 边界判断
         if (realLeft + cardWidth >= this.dragView.clientWidth) {
           realLeft = this.dragView.offsetWidth - cardWidth - 4;
         }
-
         if (realTop + cardHeight >= this.dragView.clientHeight) {
           realTop = this.dragView.offsetHeight - cardHeight - 4;
         }
-
+        // 设置新添加卡片的位置
         newCard.setAttribute("left", realLeft + "px");
         newCard.setAttribute("top", realTop + "px");
+        // 添加到拖拽视图区域
         this.dragView.appendChild(newCard);
-
         break;
+      // 删除当前卡片
       case CONTEXT_MENU_ITEM.DELETE:
         this.cardTarget && this.dragView.removeChild(this.cardTarget);
         break;
+      // 边界当前卡片
       case CONTEXT_MENU_ITEM.EDITOR:
         break;
-      case CONTEXT_MENU_ITEM.EDITOR:
+      // 导出当前卡片的图片
+      case CONTEXT_MENU_ITEM.EXPORT:
         break;
       default:
         break;
