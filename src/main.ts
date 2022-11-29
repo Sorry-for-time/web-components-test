@@ -50,6 +50,7 @@ self.onmessage = ({ data }) => {
 `;
 const worker = new Worker(URL.createObjectURL(new Blob([workerScript])));
 
+// 数据库信息
 const user = {
   databaseName: "data-view" /* 数据库名称 */,
   databaseVersion: 1 /* 数据库版本号 */,
@@ -101,6 +102,16 @@ window.addEventListener("load", (): void => {
     )
   );
 
+  const startObserve: () => void = (): void => {
+    useSwitchTheme();
+    observer.observe(dragView, {
+      subtree: true,
+      attributes: true,
+      characterData: true,
+      childList: true,
+    });
+  };
+
   /* 拖拽视图区域 */
   const dragView: HTMLDivElement = document.querySelector(".drag-view")!;
 
@@ -120,21 +131,9 @@ window.addEventListener("load", (): void => {
         dragView.innerHTML = str.data;
       }
       database?.close();
-      useSwitchTheme();
-      observer.observe(dragView, {
-        subtree: true,
-        attributes: true,
-        characterData: true,
-        childList: true,
-      });
+      startObserve();
     };
   } else {
-    useSwitchTheme();
-    observer.observe(dragView, {
-      subtree: true,
-      attributes: true,
-      characterData: true,
-      childList: true,
-    });
+    startObserve();
   }
 });
