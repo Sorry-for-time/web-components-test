@@ -5,10 +5,30 @@ import { WebComponentDefine } from "./WebComponentDefine.js";
  * 定义菜单选项里的选项名称
  */
 const enum CONTEXT_MENU_ITEM {
+  /**
+   * 添加一个新的卡片实例
+   */
   ADD = "add",
+
+  /**
+   * 删除当前卡片实例
+   */
   DELETE = "delete",
+
+  /**
+   * 编辑当前卡片实例
+   */
   EDITOR = "editor",
+
+  /**
+   * 导出当前卡片实例的文本内容
+   */
   EXPORT = "export",
+
+  /**
+   * 打印页面
+   */
+  PRINT = "print",
 }
 
 /**
@@ -23,7 +43,7 @@ export class ContextMenu extends HTMLElement implements WebComponentDefine {
   private dragView: HTMLDivElement;
   private cardTarget: CustomCard | null = null;
 
-  /* 记录当前点击转换后的合法界面位置 */
+  /* 记录点击后经过边界处理的光位置 */
   private clickPosition: {
     left: number;
     top: number;
@@ -122,8 +142,24 @@ export class ContextMenu extends HTMLElement implements WebComponentDefine {
         // 聚焦光标
         editor.focus();
         break;
-      // 导出当前卡片的图片
       case CONTEXT_MENU_ITEM.EXPORT:
+        const container: HTMLDivElement =
+          this.cardTarget?.shadowRoot?.querySelector(".container")!;
+        let anchor: HTMLAnchorElement | null = document.createElement("a");
+        // 获取文本内容
+        const text: string =
+          container.querySelector(".content")?.textContent || "";
+        // 设置锚点链接
+        anchor.setAttribute(
+          "href",
+          "data:text/plain;charset=utf-8," + encodeURIComponent(text.trim())
+        );
+        anchor.setAttribute("download", "context.txt"); // 设置下载链接
+        anchor.click(); // 触发点击, 进行导出
+        anchor = null; // 置空元素, 方便 vm 回收
+        break;
+      case CONTEXT_MENU_ITEM.PRINT:
+        setTimeout(print); /* 在主线程空闲后调用内置打印函数 */
         break;
       default:
         break;
@@ -151,21 +187,32 @@ export class ContextMenu extends HTMLElement implements WebComponentDefine {
       p.classList.add("hide");
     });
 
+    // 如果目标为一个 CustomCard 实例的情况
     if (isCustomCardInstance) {
       this.allItems.forEach((p: HTMLParagraphElement): void => {
-        if (p.id !== CONTEXT_MENU_ITEM.ADD) {
+        // 目标为卡片实例时不显示 "添加" 和 "打印" 选项
+        if (
+          p.id !== CONTEXT_MENU_ITEM.ADD &&
+          p.id !== CONTEXT_MENU_ITEM.PRINT
+        ) {
           p.classList.remove("hide");
         }
       });
-    } else {
+    }
+    // 目标为拖拽可视区域
+    else {
+      // 目标不为卡片实例时显示 "添加" 和 "打印" 选项
       this.allItems.forEach((p: HTMLParagraphElement): void => {
-        if (p.id === CONTEXT_MENU_ITEM.ADD) {
+        if (
+          p.id === CONTEXT_MENU_ITEM.ADD ||
+          p.id === CONTEXT_MENU_ITEM.PRINT
+        ) {
           p.classList.remove("hide");
         }
       });
     }
 
-    /* 缺德菜单的宽高 */
+    /* 右键菜单的宽高值 */
     const menuWidth: number = this.container.offsetWidth;
     const menuHeight: number = this.container.offsetHeight;
 
