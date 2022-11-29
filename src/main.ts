@@ -42,7 +42,7 @@ self.onmessage = ({ data }) => {
               data,
           });
           query.onsuccess = () => {
-              console.log("插入数据成功成", query.result);
+            console.log("插入数据成功成", "索引:" ,query.result);
           };
       }
   }
@@ -87,7 +87,22 @@ idbRequest.onsuccess = (): void => {
 };
 
 window.addEventListener("load", (): void => {
-  const dragView = document.querySelector(".drag-view")!;
+  // 注册组件
+  customElements.define("custom-card", CustomCard);
+  customElements.define("context-menu", ContextMenu);
+
+  const observer = new MutationObserver(
+    debounce(
+      (_records: MutationRecord[]): void => {
+        worker.postMessage(dragView.innerHTML.toString().replaceAll("\n", ""));
+      },
+      true,
+      200
+    )
+  );
+
+  /* 拖拽视图区域 */
+  const dragView: HTMLDivElement = document.querySelector(".drag-view")!;
 
   const transaction: IDBTransaction | null =
     database && database.transaction(user.storeObjectName, "readwrite");
@@ -97,36 +112,29 @@ window.addEventListener("load", (): void => {
       user.storeObjectName
     );
 
-    const res = objectStore.get(user.storeObjectId);
-    res.onsuccess = () => {
+    const res: IDBRequest<any> = objectStore.get(user.storeObjectId);
+    res.onsuccess = (): void => {
       const str = res.result;
       if (str) {
-        console.log(str);
-
+        console.log("从 IndexedDB 获取数据成功");
         dragView.innerHTML = str.data;
       }
       database?.close();
       useSwitchTheme();
+      observer.observe(dragView, {
+        subtree: true,
+        attributes: true,
+        characterData: true,
+        childList: true,
+      });
     };
+  } else {
+    useSwitchTheme();
+    observer.observe(dragView, {
+      subtree: true,
+      attributes: true,
+      characterData: true,
+      childList: true,
+    });
   }
-
-  const observer = new MutationObserver(
-    debounce(
-      (_records: MutationRecord[]): void => {
-        worker.postMessage(dragView.innerHTML.toString().replaceAll("\n", ""));
-      },
-      true,
-      1000
-    )
-  );
-
-  observer.observe(dragView, {
-    subtree: true,
-    attributes: true,
-    characterData: true,
-    childList: true,
-  });
-  // 注册组件
-  customElements.define("custom-card", CustomCard);
-  customElements.define("context-menu", ContextMenu);
 });
