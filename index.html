@@ -109,8 +109,14 @@
           align-items: center;
         }
 
-        p.hide,
         .wrapper.hide {
+          z-index: -1;
+          transition: all 100ms ease-out;
+          opacity: 0;
+          visibility: hidden;
+        }
+
+        p.hide {
           display: none;
         }
 
@@ -150,9 +156,6 @@
     </style>
   </head>
   <body class="hidden">
-    <!-- 自定义菜单 -->
-    <context-menu></context-menu>
-
     <div id="app">
       <header>
         <span id="normal-theme"></span>
@@ -161,6 +164,9 @@
       </header>
       <main>
         <div class="drag-view">
+          <!-- 自定义菜单 -->
+          <context-menu></context-menu>
+
           <custom-card left="40px" top="30px">
             小镇淹没在兽们无数蹄角击出的声浪中。这蹄声使我联想起从地层深处涌起的无数细小的水泡。水泡漫过路面，爬上家家户户的墙壁，就连钟塔也被它整个包笼起来。但这仅仅是暮色中的幻想，一睁眼水泡即杳然逝去。
           </custom-card>
