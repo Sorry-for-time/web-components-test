@@ -1,3 +1,5 @@
+import { WebComponentDefine } from "./WebComponentDefine.js";
+
 /**
  * 鼠标相关回调事件类型定义
  */
@@ -9,7 +11,7 @@ type MOUSE_OPERATION = (ev: MouseEvent) => void;
  * @class CustomCard
  * @extends {HTMLElement}
  */
-export class CustomCard extends HTMLElement {
+export class CustomCard extends HTMLElement implements WebComponentDefine {
   /* 组件上的真实 dom 结构引用记录 */
   private container: HTMLElement;
   private titleEl: HTMLElement;
@@ -70,10 +72,10 @@ export class CustomCard extends HTMLElement {
     this.container.style.top = this.defaultPositionBucket.top;
     // 通知浏览器将快变化的属性
     this.container.style.willChange = "left, top";
+    this.addEventListener("click", this.setCurrentPriorityDisplay);
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
     this.textEditor.addEventListener("dblclick", this.textEditorInput);
     document.addEventListener("click", this.textEditorBlur);
-    this.addEventListener("click", this.setCurrentPriorityDisplay);
 
     this._createCostTime = performance.now() - this._createCostTime;
     CustomCard.debugBucket.open &&
@@ -109,6 +111,11 @@ export class CustomCard extends HTMLElement {
    * @param ev 鼠标主键按下事件
    */
   private mouseDownHandler: MOUSE_OPERATION = (ev: MouseEvent): void => {
+    // 如果已经是优先级别最高的元素, 那么久不重新操作
+    if (this.parentElement?.lastElementChild !== this) {
+      this.parentElement?.appendChild(this);
+    }
+
     ev.preventDefault();
     ev.stopPropagation();
 
@@ -198,7 +205,9 @@ export class CustomCard extends HTMLElement {
     ev.preventDefault();
     ev.stopPropagation();
     /* 将点击选中的元素移动到父容器的末尾, 实现显示层级上的的优先显示 */
-    this.parentElement?.appendChild(this);
+    if (this.parentElement?.lastElementChild !== this) {
+      this.parentElement?.appendChild(this);
+    }
   };
 
   static get observedAttributes(): Array<string> {
