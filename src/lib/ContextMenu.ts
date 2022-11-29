@@ -85,6 +85,8 @@ export class ContextMenu extends HTMLElement implements WebComponentDefine {
   private clickMenuItemHandler: (ev: MouseEvent) => void = (
     ev: MouseEvent
   ): void => {
+    ev.preventDefault();
+    ev.stopPropagation();
     /* 取得点击的目标元素 */
     const target: HTMLParagraphElement = ev.target as HTMLParagraphElement;
     switch (target.id) {
@@ -114,6 +116,11 @@ export class ContextMenu extends HTMLElement implements WebComponentDefine {
         break;
       // 边界当前卡片
       case CONTEXT_MENU_ITEM.EDITOR:
+        const editor: HTMLDivElement =
+          this.cardTarget?.shadowRoot?.querySelector(".content")!;
+        editor.setAttribute("contenteditable", "true");
+        // 聚焦光标
+        editor.focus();
         break;
       // 导出当前卡片的图片
       case CONTEXT_MENU_ITEM.EXPORT:
@@ -121,6 +128,8 @@ export class ContextMenu extends HTMLElement implements WebComponentDefine {
       default:
         break;
     }
+    // 点击完成后移隐藏菜单栏
+    this.container.classList.add("hide");
   };
 
   /**
