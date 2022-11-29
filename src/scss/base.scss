@@ -4,8 +4,8 @@
   --special-mode-bgc: hsl(32, 41%, 16%);
 
   --header-height: 40px;
-  --footer-height: 100px;
-  --mode-button-size: 30px;
+  --footer-height: 30px;
+  --mode-button-size: 40px;
 }
 
 // 设置 webkit 内核系浏览器的默认滚动条样式
@@ -146,15 +146,13 @@ body {
           hsl(155, 90%, 60%) 11.2%,
           hsl(212, 92%, 46%) 91.1%
         );
-      font-weight: 600;
-      font-size: 40px;
+      font-size: 18px;
       background-clip: text;
       -webkit-background-clip: text;
       animation: scroll-text-color 4s linear infinite;
       font-weight: bolder;
       letter-spacing: 6px;
-      text-decoration: underline;
-      font-style: italic;
+      border-bottom: 1px solid cyan;
 
       @keyframes scroll-text-color {
         from {
