@@ -141,6 +141,8 @@ export class ContextMenu extends HTMLElement implements WebComponentDefine {
         editor.setAttribute("contenteditable", "true");
         // 聚焦光标
         editor.focus();
+        // 在获取光标后勾选所有的文本内容
+        document.execCommand("selectAll", true);
         break;
       case CONTEXT_MENU_ITEM.EXPORT:
         const container: HTMLDivElement =
