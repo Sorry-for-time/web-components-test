@@ -68,10 +68,8 @@ export class CustomCard extends HTMLElement {
   connectedCallback(): void {
     this.container.style.left = this.defaultPositionBucket.left;
     this.container.style.top = this.defaultPositionBucket.top;
-    this.container.style.setProperty("--weight", "3");
-    this.container.style.zIndex = "var(--weight)";
     // 通知浏览器将快变化的属性
-    this.container.style.willChange = "left, top, z-index";
+    this.container.style.willChange = "left, top";
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
     this.textEditor.addEventListener("dblclick", this.textEditorInput);
     document.addEventListener("click", this.textEditorBlur);
@@ -151,6 +149,8 @@ export class CustomCard extends HTMLElement {
 
       this.container.style.left = `${applyLeft}px`;
       this.container.style.top = `${applyTop}px`;
+      this.setAttribute("left", `${applyLeft}px`);
+      this.setAttribute("top", `${applyTop}px`);
     };
 
     document.addEventListener("mousemove", mouseMove);
@@ -197,14 +197,8 @@ export class CustomCard extends HTMLElement {
   ): void => {
     ev.preventDefault();
     ev.stopPropagation();
-    {
-      Array.from(this.parentElement!.children).forEach((el: Element): void => {
-        (
-          (el as CustomCard).shadowRoot?.lastElementChild as HTMLDivElement
-        ).style.setProperty("--weight", "unset");
-      });
-      this.container.style.setProperty("--weight", "3");
-    }
+    /* 将点击选中的元素移动到父容器的末尾, 实现显示层级上的的优先显示 */
+    this.parentElement?.appendChild(this);
   };
 
   static get observedAttributes(): Array<string> {
