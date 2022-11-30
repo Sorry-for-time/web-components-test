@@ -1,58 +1,21 @@
 import { CustomCard } from "./lib/CustomCard.js";
 import { ContextMenu } from "./lib/ContextMenu.js";
+import { workerScriptBody } from "./worker-script/IndexedDB-store-worker.js";
 import {
   useSwitchTheme,
   useResetToDefaultTheme,
 } from "./dom-operation/switch-theme.js";
 import { debounce } from "./utils/performanceUtil.js";
 
+const workerScriptRaw: string = workerScriptBody
+  .toString()
+  .replace("function workerScriptBody() {", "");
 // worker 脚本字符串
-const workerScript = `
-const user = {
-  databaseName: "data-view" /* 数据库名称 */,
-  databaseVersion: 1 /* 数据库版本号 */,
-  storeObjectName: "data-store" /* 实例对象名称 */,
-  storeObjectId: "data-view-key" /* 唯一 key */,
-};
-let transaction = null;
-let database = null;
-let objectStore = null;
-// 创建一个连接到数据库的实例
-const idbRequest = indexedDB.open(user.databaseName /* 打开的数据库 */, user.databaseVersion /* 数据库版本 */);
-idbRequest.onerror = () => {
-  console.warn(idbRequest.error);
-};
-idbRequest.onupgradeneeded = () => {
-  database = idbRequest.result;
-  /* 创建数据库 */
-  database.createObjectStore(user.storeObjectName, // 数据库对象名称(有点类似表)
-  {
-      keyPath: "id" /* 主键名称 */,
-      autoIncrement: false /* 关闭主键自动递增 */,
-  });
-};
-idbRequest.onsuccess = () => {
-  database = idbRequest.result;
-};
-// worker 线程
-self.onmessage = ({ data }) => {
-  if (database) {
-      transaction = database.transaction(user.storeObjectName, "readwrite");
-      objectStore = transaction.objectStore(user.storeObjectName);
-      if (objectStore) {
-          let query = objectStore.put({
-              id: user.storeObjectId,
-              data,
-          });
-          query.onsuccess = () => {
-            console.log("插入数据成功成", "索引:" ,query.result);
-          };
-      }
-  }
-};
-`;
-
-// 创建工作者线程实例
+const workerScript: string = workerScriptRaw
+  .substring(0, workerScriptRaw.lastIndexOf("}"))
+  .replaceAll("\n", "")
+  .trim();
+// 创建线程
 const worker = new Worker(URL.createObjectURL(new Blob([workerScript])));
 
 // 数据库配置信息
