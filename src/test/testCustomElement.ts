@@ -1,4 +1,4 @@
-import { CustomCard } from "src/lib/CustomCard.js";
+import { CustomCard } from "src/lib/components/CustomCard.js";
 import { iterableConstructorBackItemByDelay } from "../utils/iterableObjDelayBackItem.js";
 
 export async function testCustomElement() {

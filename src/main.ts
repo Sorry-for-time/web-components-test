@@ -1,5 +1,5 @@
-import { CustomCard } from "./lib/CustomCard.js";
-import { ContextMenu } from "./lib/ContextMenu.js";
+import { CustomCard } from "./lib/components/CustomCard.js";
+import { ContextMenu } from "./lib/components/ContextMenu.js";
 import { workerScriptBody } from "./worker-script/IndexedDB-store-worker.js";
 import {
   useSwitchTheme,

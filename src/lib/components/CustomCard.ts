@@ -1,4 +1,4 @@
-import { WebComponentBase } from "./WebComponentBase";
+import { WebComponentBase } from "../WebComponentBase";
 
 /**
  * 鼠标相关回调事件类型定义

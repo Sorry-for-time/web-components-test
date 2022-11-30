@@ -1,5 +1,5 @@
 import { CustomCard } from "./CustomCard.js";
-import { WebComponentBase } from "./WebComponentBase.js";
+import { WebComponentBase } from "../WebComponentBase.js";
 
 /**
  * 定义菜单选项里的选项名称
