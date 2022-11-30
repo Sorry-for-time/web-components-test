@@ -23,6 +23,13 @@
 - 使用 sass(css 预处理器) 简化重复的样式编写
 - 暂时就先这样...
 
+## 简单的一张 GIF 进行演示
+
+> 为了限制文件大小, 帧率压得很低(所以看起来会很卡, 但实际并不会, 即使没用 transform)
+> ![](./.assets/display.gif)
+> 节点稍微较多的情况下
+> ![](./.assets/exetrme.png)
+
 ## References
 
 - [MDN](https://developer.mozilla.org/)
