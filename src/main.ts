@@ -1,6 +1,9 @@
 import { CustomCard } from "./lib/CustomCard.js";
 import { ContextMenu } from "./lib/ContextMenu.js";
-import { useSwitchTheme } from "./dom-operation/switch-theme.js";
+import {
+  useSwitchTheme,
+  useResetToDefaultTheme,
+} from "./dom-operation/switch-theme.js";
 import { debounce } from "./utils/performanceUtil.js";
 
 // worker 脚本字符串
@@ -68,12 +71,20 @@ const user = {
 }
 
 window.addEventListener("load", (): void => {
+  // 点击按钮重置主题
+  document
+    .querySelector("#reset-theme")
+    ?.addEventListener("click", debounce(useResetToDefaultTheme, true, 100));
+
   // 创建监听实例对象用于监听节点的属性变化
   const dragViewObserver = new MutationObserver(
     // 节点属性发送变化就通过 webworker 线程将新节点字符串推入 IndexedDB 数据库当中
     debounce(
       (_records: MutationRecord[]): void => {
-        worker.postMessage(dragView.innerHTML.toString().replaceAll("\n", ""));
+        worker.postMessage({
+          payload: dragView.innerHTML.toString().replaceAll("\n", "").trim(),
+          isResetSignal: false,
+        });
       },
       true,
       200
@@ -98,60 +109,82 @@ window.addEventListener("load", (): void => {
 
   // 数据库实例引用
   let database: IDBDatabase | null = null;
-  // 创建一个连接到数据库的请求实例
-  const idbRequest: IDBOpenDBRequest = indexedDB.open(
-    user.databaseName /* 打开的数据库名称 */,
-    user.databaseVersion /* 数据库版本 */
+
+  function databaseOperation(): void {
+    // 创建一个连接到数据库的请求实例
+    const idbRequest: IDBOpenDBRequest = indexedDB.open(
+      user.databaseName /* 打开的数据库名称 */,
+      user.databaseVersion /* 数据库版本 */
+    );
+
+    idbRequest.onupgradeneeded = (): void => {
+      database = idbRequest.result;
+      /* 创建数据库的实例对象 */
+      database.createObjectStore(
+        user.storeObjectName, // 数据库实例对象名称(有点类似表)
+        {
+          keyPath: "id" /* 主键名称 */,
+          autoIncrement: false /* 关闭主键自动递增 */,
+        }
+      );
+    };
+
+    idbRequest.onerror = (): void => {
+      console.warn(idbRequest.error);
+      viewPageInitOperation();
+    };
+
+    idbRequest.onsuccess = (): void => {
+      database = idbRequest.result;
+      // 创建一个只读写事务源
+      const transaction: IDBTransaction = database.transaction(
+        user.storeObjectName,
+        "readonly"
+      );
+
+      // 获取数据对象实例
+      const objectStore: IDBObjectStore = transaction.objectStore(
+        user.storeObjectName
+      );
+
+      // 进行读取数据操作
+      const req: IDBRequest<any> = objectStore.get(user.storeObjectId);
+
+      req.onsuccess = (): void => {
+        const packet: any = req.result;
+        if (packet && !packet.data.isResetSignal) {
+          console.log("从 IndexedDB 获取数据成功");
+          // 回写 dom 字符串
+          dragView.innerHTML = packet.data.payload;
+        }
+        database?.close();
+        viewPageInitOperation();
+      };
+
+      req.onerror = (): void => {
+        console.warn("获取数据失败", req.error);
+        viewPageInitOperation();
+        database?.close();
+      };
+    };
+  }
+  databaseOperation();
+
+  // 点击恢复默认布局
+  document.querySelector("#reset-layout")!.addEventListener(
+    "click",
+    debounce(
+      (): void => {
+        if (window.confirm("是否恢复默认布局?")) {
+          worker.postMessage({
+            payload: "",
+            isResetSignal: true,
+          });
+          window.location.reload();
+        }
+      },
+      true,
+      100
+    )
   );
-
-  idbRequest.onupgradeneeded = (): void => {
-    database = idbRequest.result;
-    /* 创建数据库的实例对象 */
-    database.createObjectStore(
-      user.storeObjectName, // 数据库实例对象名称(有点类似表)
-      {
-        keyPath: "id" /* 主键名称 */,
-        autoIncrement: false /* 关闭主键自动递增 */,
-      }
-    );
-  };
-
-  idbRequest.onerror = (): void => {
-    console.warn(idbRequest.error);
-    viewPageInitOperation();
-  };
-
-  idbRequest.onsuccess = (): void => {
-    database = idbRequest.result;
-    // 创建可读可写事务源
-    const transaction: IDBTransaction = database.transaction(
-      user.storeObjectName,
-      "readwrite"
-    );
-
-    // 获取数据对象实例
-    const objectStore: IDBObjectStore = transaction.objectStore(
-      user.storeObjectName
-    );
-
-    // 进行读取数据操作
-    const req: IDBRequest<any> = objectStore.get(user.storeObjectId);
-
-    req.onsuccess = (): void => {
-      const str = req.result;
-      if (str) {
-        console.log("从 IndexedDB 获取数据成功");
-        // 回写 dom 字符串
-        dragView.innerHTML = str.data;
-      }
-      database?.close();
-      viewPageInitOperation();
-    };
-
-    req.onerror = (): void => {
-      console.warn("获取数据失败", req.error);
-      viewPageInitOperation();
-      database?.close();
-    };
-  };
 });
