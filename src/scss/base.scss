@@ -1,6 +1,6 @@
 :root {
   --light-mode-bgc: hsl(219, 18%, 62%);
-  --dark-mode-bgc: hsl(0, 0%, 12%);
+  --dark-mode-bgc: hsl(206, 31%, 15%);
   --special-mode-bgc: hsl(32, 41%, 16%);
 
   --header-height: 40px;
@@ -82,37 +82,66 @@ body {
 
   header {
     background-color: hsla(0, 0%, 65%, 0.082);
-    display: flex;
+    display: grid;
     align-items: center;
     column-gap: 10px;
-    justify-content: flex-end;
+    grid-template-columns: 230px 100px;
+    justify-content: space-between;
 
-    span {
-      flex: auto;
-      max-width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      transition: 200ms ease-out;
+    .reset-items {
+      width: 100%;
 
-      &:hover,
-      &.active {
-        transform: scale(1.1);
-        background-color: 0 0 4px hsl(0, 0%, 100%);
-        border: 2px solid hsl(276, 5%, 82%);
+      button {
+        margin-left: 10px;
+        display: inline-block;
+        padding: 8px;
+        background: hsla(0, 0%, 38%, 0.24);
+        border: none;
+        color: hsla(0, 0%, 100%, 0.631);
+        border-radius: 5px;
+        backdrop-filter: blur(12px);
         cursor: pointer;
-      }
+        box-shadow: 0 1px 2px black;
+        transition: all 100ms ease-out;
 
-      &:first-child {
-        background: var(--light-mode-bgc);
+        &:active {
+          outline: 1px solid hsla(0, 0%, 100%, 0.308);
+          color: white;
+        }
       }
+    }
 
-      &:nth-child(2) {
-        background: var(--special-mode-bgc);
-      }
+    .theme-items {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      span {
+        flex: auto;
+        max-width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        transition: 200ms ease-out;
 
-      &:last-child {
-        background: var(--dark-mode-bgc);
-        margin-right: 20px;
+        &:hover,
+        &.active {
+          transform: scale(1.1);
+          background-color: 0 0 4px hsl(0, 0%, 100%);
+          border: 2px solid hsl(276, 5%, 82%);
+          cursor: pointer;
+        }
+
+        &:first-child {
+          background: var(--light-mode-bgc);
+        }
+
+        &:nth-child(2) {
+          background: var(--special-mode-bgc);
+        }
+
+        &:last-child {
+          background: var(--dark-mode-bgc);
+          margin-right: 20px;
+        }
       }
     }
   }
