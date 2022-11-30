@@ -51,7 +51,7 @@ export function workerScriptBody(): void {
           data,
         });
         query.onsuccess = (): void => {
-          console.log("插入成", query.result);
+          console.log("更新数据成功; key -->", query.result);
         };
       }
     }
