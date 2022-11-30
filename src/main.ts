@@ -1,5 +1,6 @@
 import { CustomCard } from "./lib/components/CustomCard.js";
 import { ContextMenu } from "./lib/components/ContextMenu.js";
+import { Dialog } from "./lib/components/Dialog.js";
 import { workerScriptBody } from "./worker-script/IndexedDB-store-worker.js";
 import {
   useSwitchTheme,
@@ -31,9 +32,13 @@ const user = {
   // 注册自定义组件
   customElements.define("custom-card", CustomCard);
   customElements.define("context-menu", ContextMenu);
+  customElements.define("custom-dialog", Dialog);
 }
 
 window.addEventListener("load", (): void => {
+  const dialog: Dialog = new Dialog();
+  document.body.appendChild(dialog);
+
   // 点击按钮重置主题
   document
     .querySelector("#reset-theme")
@@ -137,14 +142,16 @@ window.addEventListener("load", (): void => {
   document.querySelector("#reset-layout")!.addEventListener(
     "click",
     debounce(
-      (): void => {
-        if (window.confirm("是否恢复默认布局?")) {
-          worker.postMessage({
-            payload: "",
-            isResetSignal: true,
-          });
-          window.location.reload();
-        }
+      () => {
+        dialog.alert("您确定恢复初始界面吗?", (value: boolean) => {
+          if (value) {
+            worker.postMessage({
+              payload: "",
+              isResetSignal: true,
+            });
+            window.location.reload();
+          }
+        });
       },
       true,
       100
