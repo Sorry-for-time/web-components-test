@@ -1,24 +1,46 @@
 # PROJECT: web-components-test
 
-> 实验小组 (**SIX WALNUTS**): 六个核桃
+> 实验小组 (**SIX WALNUTS**): **六个核桃**
 
 ## Features
 
-- 基于原生 `WebComponent` 实现自定义组件
-  - 自动内部实现挂载时设置监听器, 卸载元素自动移除监听器
+- 基于原生 `WebComponent` 实现可拖拽编辑自定义卡片组件
+  - 实现 css, 变量等属性隔离, 封装隐藏具体操作
+  - 通过内部的生命周期函数实现听器的挂载和卸载自动配置
   - 利用代理实现部分属性监听/劫持
-- 基于 `typescript`, 带来更加友好的类型系统
-- 简单的白天/黑夜主题模式切换
+  - 组件内置性能监测配置, 可选的日志输出配置项
+- 通过 `MutationObserver` 进行监听, 实时记录最新的数据, 并且通过防抖函数限制频繁记录
+  - 配合 `WebWorker` 线程 以及 `IndexedDB` 实现最新的数据持久化存储, 解决采用 localStorage 读写时的阻塞问题
+- 多种风格主题模式切换
+- 自定义菜单组件(同样基于原生 WebComponent), 并拦截默认事件, 实现自定义功能
+  - 添加
+  - 编辑
+  - 删除
+  - 导出卡片内文本
+  - 打印页面
+- 使用 `typescript` 编写, 带来更加友好的类型系统和 IDE 代码提示
+- 使用 sass(css 预处理器) 简化重复的样式编写
 - 暂时就先这样...
 
 ## References
 
 - [MDN](https://developer.mozilla.org/)
 - [CAN I USE](https://caniuse.com/)
+- [现代 JavaScript 教程](https://zh.javascript.info/)
+
+## Browser Require
+
+- Webkit:
+  - Chromium
+    - Chrome: last 4 version
+  - Safari: the latest
+- Gecko:
+  - FireFox: last 4 version
+- ...
 
 ## Notes
 
-- 不支持 ~~IE 全家桶~~ >\_< (您或许可以考虑 Polyfill)
+- 不支持 ~~全系列 IE~~ (您或许可以考虑 Polyfill)
 - 您需要使用 `tsc` 进行编译(是的, 这不是一个 webpack 或者 vite 等构建工具的项目)
   - 但项目已经设置好了 `tsconfig.json` 文件, 所以只需简单操作即可(这要求安装好了 node 环境和 typescript 模块)
     ```sh
@@ -26,6 +48,6 @@
     cd web-components-test
     tsc -p ./tsconfig.json --watch
     ```
-- 因为使用了 ES module 系统(要求同源), 所以需要一个 `dev server`, 比如 vscode 插件: `live server`
+- 因为使用了 ES module 模块化系统, 所以需要一个 `dev server`, 比如 vscode 插件: `live server`
 - 此外, 因为使用了 sass 来简化编写样式, 所以您可能还需要一个转译插件, 比如 vscode 下的: `Live Sass` 插件
-- ~~你他可以直接粘贴到一个 vite 的空 typescript 项目里, 添加 sass 依赖, 直接 npm run dev~~
+- ~~当然, 最简单的方法是直接创建一个 vite 的 typescript 空项目里, npm 安装 sass 依赖, 代码拷贝过去, 直接 npm run dev~~
