@@ -1,4 +1,4 @@
-import { WebComponentDefine } from "./WebComponentDefine.js";
+import { WebComponentBase } from "./WebComponentBase";
 
 /**
  * 鼠标相关回调事件类型定义
@@ -11,7 +11,7 @@ type MOUSE_OPERATION = (ev: MouseEvent) => void;
  * @class CustomCard
  * @extends {HTMLElement}
  */
-export class CustomCard extends HTMLElement implements WebComponentDefine {
+export class CustomCard extends HTMLElement implements WebComponentBase {
   /* 组件上的真实 dom 结构引用记录 */
   private container: HTMLElement;
   private titleEl: HTMLElement;
@@ -64,9 +64,10 @@ export class CustomCard extends HTMLElement implements WebComponentDefine {
     this._createCostTime = performance.now() - this._createCostTime;
   }
 
-  /**
-   * 在 webComponent 挂载到页面上时绑定组件内部的监听器
-   */
+  static get observedAttributes(): Array<string> {
+    return ["left", "top"];
+  }
+
   connectedCallback(): void {
     this.container.style.left = this.defaultPositionBucket.left;
     this.container.style.top = this.defaultPositionBucket.top;
@@ -85,9 +86,6 @@ export class CustomCard extends HTMLElement implements WebComponentDefine {
       );
   }
 
-  /**
-   * 在组件实例从真实页面上卸载时解绑内部的监听器
-   */
   disconnectedCallback(): void {
     document.removeEventListener("mousedown", this.mouseDownHandler);
 
@@ -104,6 +102,23 @@ export class CustomCard extends HTMLElement implements WebComponentDefine {
         `${this._versionID} disconnected, record ${CustomCard.debugBucket
           .counter--}`
       );
+  }
+
+  attributeChangedCallback(
+    name: string,
+    _oldValue: string,
+    newValue: string
+  ): void {
+    switch (name) {
+      case "left":
+        this.defaultPositionBucket.left = newValue;
+        break;
+      case "top":
+        this.defaultPositionBucket.top = newValue;
+        break;
+      default:
+        break;
+    }
   }
 
   /**
@@ -173,6 +188,10 @@ export class CustomCard extends HTMLElement implements WebComponentDefine {
     document.addEventListener("mouseup", this.mouseUpHandlerRecord);
   };
 
+  /**
+   * 卡片文本框失去焦点
+   * @param ev
+   */
   private textEditorInput: MOUSE_OPERATION = (ev: MouseEvent): void => {
     ev.preventDefault();
     ev.stopPropagation();
@@ -180,6 +199,10 @@ export class CustomCard extends HTMLElement implements WebComponentDefine {
     this.textEditor.focus();
   };
 
+  /**
+   * 卡片文本框聚焦功能实现
+   * @param ev
+   */
   private textEditorBlur: MOUSE_OPERATION = (ev: MouseEvent): void => {
     ev.preventDefault();
     ev.stopPropagation();
@@ -209,33 +232,6 @@ export class CustomCard extends HTMLElement implements WebComponentDefine {
       this.parentElement?.appendChild(this);
     }
   };
-
-  static get observedAttributes(): Array<string> {
-    return ["left", "top"];
-  }
-
-  /**
-   * 属性监听器(这个可选项只会在通过字面量在第一次渲染到页面上时产生效果)
-   * @param name 属性名称
-   * @param _oldValue 旧值
-   * @param newValue 新值
-   */
-  attributeChangedCallback(
-    name: string,
-    _oldValue: string,
-    newValue: string
-  ): void {
-    switch (name) {
-      case "left":
-        this.defaultPositionBucket.left = newValue;
-        break;
-      case "top":
-        this.defaultPositionBucket.top = newValue;
-        break;
-      default:
-        break;
-    }
-  }
 
   /**
    * @description 实例组件的唯一标识码

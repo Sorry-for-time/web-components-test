@@ -1,5 +1,5 @@
 import { CustomCard } from "./CustomCard.js";
-import { WebComponentDefine } from "./WebComponentDefine.js";
+import { WebComponentBase } from "./WebComponentBase.js";
 
 /**
  * 定义菜单选项里的选项名称
@@ -37,7 +37,7 @@ const enum CONTEXT_MENU_ITEM {
  * @class ContextMenu
  * @extends {HTMLElement}
  */
-export class ContextMenu extends HTMLElement implements WebComponentDefine {
+export class ContextMenu extends WebComponentBase {
   private container: HTMLElement;
   private allItems: NodeListOf<HTMLParagraphElement>;
   private dragView: HTMLDivElement;
