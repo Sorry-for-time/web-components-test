@@ -52,14 +52,9 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     this.container = this.shadowRoot?.querySelector(".container")!;
     this.textEditor = this.shadowRoot?.querySelector(".content")!;
 
-    /* 在节点加载成功后替换 slot 为文本节点 */
-    const newTextNode: Text = document.createTextNode(
-      this.lastChild?.textContent || ""
-    );
-    this.textEditor.replaceChild(
-      newTextNode,
-      this.textEditor.querySelector("slot")!
-    );
+    /* 在节点加载成功后移除 slot 节点 */
+    this.textEditor.removeChild(this.textEditor.querySelector("slot")!);
+    this.textEditor.innerHTML = this.innerHTML.toString();
     // 记录创建耗时
     this._createCostTime = performance.now() - this._createCostTime;
   }
@@ -265,7 +260,9 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   /**
    * 在文本编辑框失去焦点时同步修改元素自身的 innerText
    */
-  private contentEditorChangeHandler: () => void = (): void => {
-    this.innerText = this.textEditor.innerText;
+  private contentEditorChangeHandler = (ev: Event): void => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.innerHTML = this.textEditor.innerHTML!;
   };
 }
