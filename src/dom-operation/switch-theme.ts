@@ -104,3 +104,15 @@ export function useSwitchTheme(): void {
     });
   });
 }
+
+/**
+ * 将主题重置为系统的默认主题
+ */
+export function useResetToDefaultTheme(): void {
+  localStorage.removeItem("theme-mode");
+  document.querySelectorAll("#app span").forEach((span: Element): void => {
+    span.classList.remove("active");
+  });
+  document.body.removeAttribute("class");
+  useSwitchTheme();
+}
