@@ -46,11 +46,11 @@ export function workerScriptBody(): void {
       transaction = database.transaction(user.storeObjectName, "readwrite");
       objectStore = transaction.objectStore(user.storeObjectName);
       if (objectStore) {
-        let query = objectStore.put({
+        let query: IDBRequest<IDBValidKey> = objectStore.put({
           id: user.storeObjectId,
           data,
         });
-        query.onsuccess = () => {
+        query.onsuccess = (): void => {
           console.log("插入成", query.result);
         };
       }
