@@ -48,9 +48,11 @@ self.onmessage = ({ data }) => {
   }
 };
 `;
+
+// 创建工作者线程实例
 const worker = new Worker(URL.createObjectURL(new Blob([workerScript])));
 
-// 数据库信息
+// 数据库配置信息
 const user = {
   databaseName: "data-view" /* 数据库名称 */,
   databaseVersion: 1 /* 数据库版本号 */,
@@ -58,41 +60,17 @@ const user = {
   storeObjectId: "data-view-key" /* 唯一 key */,
 };
 
-let database: IDBDatabase | null = null;
-
-// 创建一个连接到数据库的实例
-const idbRequest: IDBOpenDBRequest = indexedDB.open(
-  user.databaseName /* 打开的数据库 */,
-  user.databaseVersion /* 数据库版本 */
-);
-
-idbRequest.onerror = (): void => {
-  console.warn(idbRequest.error);
-};
-
-idbRequest.onupgradeneeded = (): void => {
-  database = idbRequest.result;
-
-  /* 创建数据库 */
-  database.createObjectStore(
-    user.storeObjectName, // 数据库对象名称(有点类似表)
-    {
-      keyPath: "id" /* 主键名称 */,
-      autoIncrement: false /* 关闭主键自动递增 */,
-    }
-  );
-};
-
-idbRequest.onsuccess = (): void => {
-  database = idbRequest.result;
-};
-
-window.addEventListener("load", (): void => {
-  // 注册组件
+{
+  // CustomCard.debugBucket.open = true; /* 打开自定义组件的日志记录输出 */
+  // 注册自定义组件
   customElements.define("custom-card", CustomCard);
   customElements.define("context-menu", ContextMenu);
+}
 
-  const observer = new MutationObserver(
+window.addEventListener("load", (): void => {
+  // 创建监听实例对象用于监听节点的属性变化
+  const dragViewObserver = new MutationObserver(
+    // 节点属性发送变化就通过 webworker 线程将新节点字符串推入 IndexedDB 数据库当中
     debounce(
       (_records: MutationRecord[]): void => {
         worker.postMessage(dragView.innerHTML.toString().replaceAll("\n", ""));
@@ -102,38 +80,78 @@ window.addEventListener("load", (): void => {
     )
   );
 
-  const startObserve: () => void = (): void => {
+  // 页面相关的初始化操作
+  function viewPageInitOperation(): void {
+    // 初始化或者还原主题样式
     useSwitchTheme();
-    observer.observe(dragView, {
+    // 监听节点属性的改变
+    dragViewObserver.observe(dragView, {
       subtree: true,
       attributes: true,
       characterData: true,
       childList: true,
     });
-  };
+  }
 
-  /* 拖拽视图区域 */
+  // 获取拖拽视图区域所在节点
   const dragView: HTMLDivElement = document.querySelector(".drag-view")!;
 
-  const transaction: IDBTransaction | null =
-    database && database.transaction(user.storeObjectName, "readwrite");
+  // 数据库实例引用
+  let database: IDBDatabase | null = null;
+  // 创建一个连接到数据库的请求实例
+  const idbRequest: IDBOpenDBRequest = indexedDB.open(
+    user.databaseName /* 打开的数据库名称 */,
+    user.databaseVersion /* 数据库版本 */
+  );
 
-  if (transaction) {
+  idbRequest.onupgradeneeded = (): void => {
+    database = idbRequest.result;
+    /* 创建数据库的实例对象 */
+    database.createObjectStore(
+      user.storeObjectName, // 数据库实例对象名称(有点类似表)
+      {
+        keyPath: "id" /* 主键名称 */,
+        autoIncrement: false /* 关闭主键自动递增 */,
+      }
+    );
+  };
+
+  idbRequest.onerror = (): void => {
+    console.warn(idbRequest.error);
+    viewPageInitOperation();
+  };
+
+  idbRequest.onsuccess = (): void => {
+    database = idbRequest.result;
+    // 创建可读可写事务源
+    const transaction: IDBTransaction = database.transaction(
+      user.storeObjectName,
+      "readwrite"
+    );
+
+    // 获取数据对象实例
     const objectStore: IDBObjectStore = transaction.objectStore(
       user.storeObjectName
     );
 
-    const res: IDBRequest<any> = objectStore.get(user.storeObjectId);
-    res.onsuccess = (): void => {
-      const str = res.result;
+    // 进行读取数据操作
+    const req: IDBRequest<any> = objectStore.get(user.storeObjectId);
+
+    req.onsuccess = (): void => {
+      const str = req.result;
       if (str) {
         console.log("从 IndexedDB 获取数据成功");
+        // 回写 dom 字符串
         dragView.innerHTML = str.data;
       }
       database?.close();
-      startObserve();
+      viewPageInitOperation();
     };
-  } else {
-    startObserve();
-  }
+
+    req.onerror = (): void => {
+      console.warn("获取数据失败", req.error);
+      viewPageInitOperation();
+      database?.close();
+    };
+  };
 });
