@@ -9,6 +9,7 @@
   - 通过内部的生命周期函数实现听器的挂载和卸载自动配置
   - 利用代理实现部分属性监听/劫持
   - 组件内置性能监测配置, 可选的日志输出配置项
+  - 选中状态下自动置顶显示
 - 通过 `MutationObserver` 进行监听, 实时记录最新的数据, 并且通过防抖函数限制频繁记录
   - 配合 `WebWorker` 线程 以及 `IndexedDB` 实现最新的数据持久化存储, 解决采用 localStorage 读写时的阻塞问题
 - 多种风格主题模式切换
@@ -19,32 +20,17 @@
   - 导出卡片内文本
   - 打印页面
 - 自定义 `Dialog` 组件替代 `confirm()`
-- 使用 `typescript` 编写, 带来更加友好的类型系统和 IDE 代码提示
+- 使用 `typescript` 编写, 带来更加友好的类型系统和舒适的 IDE 代码提示
 - 使用 sass(css 预处理器) 简化重复的样式编写
 - 暂时就先这样...
 
 ## 简单的一张 GIF 进行演示
 
 > 为了限制文件大小, 帧率压得很低(所以看起来会很卡, 但实际并不会, 即使没用 transform)
-> ![](./.assets/display.gif)
+> <img src="./.assets/display.gif" width="98%" />
+>
 > 节点稍微较多的情况下
-> ![](./.assets/exetrme.png)
-
-## References
-
-- [MDN](https://developer.mozilla.org/)
-- [CAN I USE](https://caniuse.com/)
-- [现代 JavaScript 教程](https://zh.javascript.info/)
-
-## Browser Require
-
-- Webkit:
-  - Chromium
-    - Chrome: last 4 version
-  - Safari: the latest
-- Gecko:
-  - FireFox: last 4 version
-- ...
+> <img src="./.assets/extreme.png" width="98%" />
 
 ## Notes
 
@@ -59,3 +45,19 @@
 - 因为使用了 ES module 模块化系统, 所以需要一个 `dev server`, 比如 vscode 插件: `live server`
 - 此外, 因为使用了 sass 来简化编写样式, 所以您可能还需要一个转译插件, 比如 vscode 下的: `Live Sass` 插件
 - ~~当然, 最简单的方法是直接创建一个 vite 的 typescript 空项目里, npm 安装 sass 依赖, 代码拷贝过去, 直接 npm run dev~~
+
+## Browser Require
+
+- Webkit:
+  - Chromium
+    - Chrome: last 4 version
+  - Safari: the latest
+- Gecko:
+  - FireFox: last 4 version
+- ...
+
+## References
+
+- [MDN](https://developer.mozilla.org/)
+- [CAN I USE](https://caniuse.com/)
+- [现代 JavaScript 教程](https://zh.javascript.info/)
