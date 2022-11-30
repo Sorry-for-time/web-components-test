@@ -84,6 +84,11 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
         `${this.versionId} connected, record: ${++CustomCard.debugBucket
           .counter}`
       );
+
+    this.textEditor.addEventListener(
+      "focusout",
+      this.contentEditorChangeHandler
+    );
   }
 
   disconnectedCallback(): void {
@@ -96,6 +101,10 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     this.textEditor.removeEventListener("dblclick", this.textEditorInput);
     document.removeEventListener("click", this.textEditorBlur);
     this.removeEventListener("click", this.setCurrentPriorityDisplay);
+    this.textEditor.addEventListener(
+      "focusout",
+      this.contentEditorChangeHandler
+    );
 
     CustomCard.debugBucket.open &&
       console.log(
@@ -252,4 +261,11 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   public get createCostTime(): number {
     return this._createCostTime;
   }
+
+  /**
+   * 在文本编辑框失去焦点时同步修改元素自身的 innerText
+   */
+  private contentEditorChangeHandler: () => void = (): void => {
+    this.innerText = this.textEditor.innerText;
+  };
 }
