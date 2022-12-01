@@ -44,7 +44,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     super();
     this.attachShadow({ mode: "open" }).appendChild(
       (
-        document.querySelector("#template") as HTMLTemplateElement
+        document.querySelector("#custom-card") as HTMLTemplateElement
       ).content.cloneNode(true),
     );
 

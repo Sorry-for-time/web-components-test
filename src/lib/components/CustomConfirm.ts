@@ -10,7 +10,7 @@ export class CustomConfirm extends WebComponentBase {
     super();
     this.attachShadow({ mode: "open" }).appendChild(
       (
-        document.querySelector("#dialog") as HTMLTemplateElement
+        document.querySelector("#custom-confirm") as HTMLTemplateElement
       ).content.cloneNode(true),
     );
 

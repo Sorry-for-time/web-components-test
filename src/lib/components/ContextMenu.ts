@@ -56,7 +56,7 @@ export class ContextMenu extends WebComponentBase {
     super();
     this.attachShadow({ mode: "open" }).appendChild(
       (
-        document.querySelector("#context-menu") as HTMLTemplateElement
+        document.querySelector("#custom-menu") as HTMLTemplateElement
       ).content.cloneNode(true),
     );
 
