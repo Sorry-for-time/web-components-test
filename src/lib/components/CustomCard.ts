@@ -96,7 +96,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     this.textEditor.removeEventListener("dblclick", this.textEditorInput);
     document.removeEventListener("click", this.textEditorBlur);
     this.removeEventListener("click", this.setCurrentPriorityDisplay);
-    this.textEditor.addEventListener(
+    this.textEditor.removeEventListener(
       "focusout",
       this.contentEditorChangeHandler,
     );
