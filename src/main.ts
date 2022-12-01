@@ -5,8 +5,8 @@ import { workerScriptBody } from "./worker-script/IndexedDB-store-worker.js";
 import {
   useSwitchTheme,
   useResetToDefaultTheme,
-} from "./dom-operation/switch-theme.js";
-import { useTypewriterEffect } from "./dom-operation/typewriter-effect.js";
+} from "./layout-ui-operation/switch-theme.js";
+import { useTypewriterEffect } from "./layout-ui-operation/typewriter-effect.js";
 import { debounce } from "./utils/performanceUtil.js";
 
 const workerScriptRaw: string = workerScriptBody

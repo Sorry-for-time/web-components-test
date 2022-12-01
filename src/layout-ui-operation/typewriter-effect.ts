@@ -1,7 +1,6 @@
 export function useTypewriterEffect(): void {
   const slogan: HTMLHeadElement = document.querySelector("#app footer h1")!;
   const chars: string = slogan.textContent!;
-  console.log(chars);
   let index: number = 0;
 
   setInterval((): void => {
