@@ -6,6 +6,7 @@ import {
   useSwitchTheme,
   useResetToDefaultTheme,
 } from "./dom-operation/switch-theme.js";
+import { useTypewriterEffect } from "./dom-operation/typewriter-effect.js";
 import { debounce } from "./utils/performanceUtil.js";
 
 const workerScriptRaw: string = workerScriptBody
@@ -36,6 +37,7 @@ const user = {
 }
 
 window.addEventListener("load", (): void => {
+  useTypewriterEffect();
   const dialog: CustomConfirm = new CustomConfirm();
   document.body.appendChild(dialog);
 

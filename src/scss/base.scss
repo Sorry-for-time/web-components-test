@@ -193,7 +193,8 @@ body {
     user-select: none;
     border-top: 1px solid hsla(39, 77%, 83%, 0.582);
 
-    h1 {
+    h1,
+    span {
       color: transparent;
       background: scroll no-repeat center
         linear-gradient(
@@ -215,6 +216,21 @@ body {
         }
         to {
           filter: hue-rotate(360deg);
+        }
+      }
+    }
+    span {
+      font-weight: bolder;
+      animation: input-effect steps(2) 600ms infinite;
+      border-right: 2px solid;
+      border: none;
+
+      @keyframes input-effect {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
         }
       }
     }
