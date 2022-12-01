@@ -1,6 +1,67 @@
 import { CustomCard } from "./CustomCard.js";
 import { WebComponentBase } from "../WebComponentBase.js";
 
+const templateStr: string = `
+<style>
+  .wrapper {
+    --text-color: hsl(0, 0%, 100%);
+    overflow: hidden;
+
+    box-sizing: border-box;
+    user-select: none;
+    z-index: 23;
+    position: absolute;
+    width: 240px;
+    will-change: transform;
+    border-radius: 8px;
+    box-shadow: 0 0 3px black;
+    border: 1px solid hsla(0, 0%, 100%, 0.205);
+    background-color: hsla(0, 0%, 19%, 0.384);
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .wrapper.hide {
+    z-index: -1;
+    transition: all 100ms ease-out;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  p.hide {
+    display: none;
+  }
+
+  p {
+    flex: 100%;
+    margin: 3px;
+    padding: 4px 8px;
+    color: var(--text-color);
+    border-radius: 5px;
+    transition: all 200ms ease-out;
+  }
+
+  P:nth-child(3) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.205);
+  }
+
+  p:hover {
+    background-color: rgba(240, 248, 255, 0.336);
+  }
+  </style>
+
+  <!-- 菜单按钮 -->
+  <div class="wrapper hide">
+  <p id="add">添加</p>
+  <p id="editor">编辑</p>
+  <p id="delete">删除</p>
+  <p id="export">导出内容</p>
+  <p id="print">打印当前页面</p>
+  </div>
+`;
+
 /**
  * 定义菜单选项里的选项名称
  */
@@ -54,11 +115,7 @@ export class ContextMenu extends WebComponentBase {
 
   constructor() {
     super();
-    this.attachShadow({ mode: "open" }).appendChild(
-      (
-        document.querySelector("#custom-menu") as HTMLTemplateElement
-      ).content.cloneNode(true),
-    );
+    this.attachShadow({ mode: "open" }).innerHTML = templateStr;
 
     this.container = this.shadowRoot?.querySelector(".wrapper")!;
     this.allItems = this.shadowRoot?.querySelectorAll("p")!;
