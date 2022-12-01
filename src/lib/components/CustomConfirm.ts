@@ -1,6 +1,6 @@
 import { WebComponentBase } from "../WebComponentBase.js";
 
-export class Dialog extends WebComponentBase {
+export class CustomConfirm extends WebComponentBase {
   private container: HTMLDivElement | null = null;
   private confirmButton: HTMLButtonElement | null;
   private cancelButton: HTMLButtonElement | null;

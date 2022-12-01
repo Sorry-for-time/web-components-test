@@ -1,6 +1,6 @@
 import { CustomCard } from "./lib/components/CustomCard.js";
 import { ContextMenu } from "./lib/components/ContextMenu.js";
-import { Dialog } from "./lib/components/Dialog.js";
+import { CustomConfirm } from "./lib/components/CustomConfirm.js";
 import { workerScriptBody } from "./worker-script/IndexedDB-store-worker.js";
 import {
   useSwitchTheme,
@@ -32,11 +32,11 @@ const user = {
   // 注册自定义组件
   customElements.define("custom-card", CustomCard);
   customElements.define("context-menu", ContextMenu);
-  customElements.define("custom-dialog", Dialog);
+  customElements.define("custom-dialog", CustomConfirm);
 }
 
 window.addEventListener("load", (): void => {
-  const dialog: Dialog = new Dialog();
+  const dialog: CustomConfirm = new CustomConfirm();
   document.body.appendChild(dialog);
 
   // 点击按钮重置主题
