@@ -106,7 +106,7 @@ window.addEventListener("load", (): void => {
 
     idbRequest.onsuccess = (): void => {
       database = idbRequest.result;
-      // 创建一个只读写事务源
+      // 创建一个只读事务源
       const transaction: IDBTransaction = database.transaction(
         user.storeObjectName,
         "readonly",
