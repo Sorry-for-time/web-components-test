@@ -6,6 +6,7 @@ const enum THEMES {
   "dark" = "dark-theme",
   "special" = "special-theme",
   "gray" = "gray-theme",
+  "slogan" = "slogan-theme",
 }
 
 /**
@@ -36,6 +37,9 @@ export function useSwitchTheme(): void {
         break;
       case THEMES.gray:
         themeIDTag = THEMES.gray;
+        break;
+      case THEMES.slogan:
+        themeIDTag = THEMES.slogan;
         break;
       default:
         themeIDTag = THEMES.normal;
@@ -100,6 +104,9 @@ export function useSwitchTheme(): void {
           break;
         case THEMES.gray:
           spanThemeStr = THEMES.gray;
+          break;
+        case THEMES.slogan:
+          spanThemeStr = THEMES.slogan;
           break;
         default:
           /* 除非非法修改, 不然应该不会有什么问题 */
