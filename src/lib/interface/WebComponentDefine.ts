@@ -25,6 +25,6 @@ export interface WebComponentDefine {
   attributeChangedCallback?(
     name?: string,
     _oldValue?: string,
-    newValue?: string
+    newValue?: string,
   ): void;
 }

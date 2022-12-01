@@ -45,7 +45,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     this.attachShadow({ mode: "open" }).appendChild(
       (
         document.querySelector("#template") as HTMLTemplateElement
-      ).content.cloneNode(true)
+      ).content.cloneNode(true),
     );
 
     this.titleEl = this.shadowRoot?.querySelector(".title")!;
@@ -77,12 +77,12 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     CustomCard.debugBucket.open &&
       console.log(
         `${this.versionId} connected, record: ${++CustomCard.debugBucket
-          .counter}`
+          .counter}`,
       );
 
     this.textEditor.addEventListener(
       "focusout",
-      this.contentEditorChangeHandler
+      this.contentEditorChangeHandler,
     );
   }
 
@@ -98,20 +98,20 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     this.removeEventListener("click", this.setCurrentPriorityDisplay);
     this.textEditor.addEventListener(
       "focusout",
-      this.contentEditorChangeHandler
+      this.contentEditorChangeHandler,
     );
 
     CustomCard.debugBucket.open &&
       console.log(
         `${this._versionID} disconnected, record ${CustomCard.debugBucket
-          .counter--}`
+          .counter--}`,
       );
   }
 
   attributeChangedCallback(
     name: string,
     _oldValue: string,
-    newValue: string
+    newValue: string,
   ): void {
     switch (name) {
       case "left":
@@ -227,7 +227,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
    * @memberof CustomCard
    */
   private setCurrentPriorityDisplay: MOUSE_OPERATION = (
-    ev: MouseEvent
+    ev: MouseEvent,
   ): void => {
     ev.preventDefault();
     ev.stopPropagation();

@@ -11,7 +11,7 @@ export class CustomConfirm extends WebComponentBase {
     this.attachShadow({ mode: "open" }).appendChild(
       (
         document.querySelector("#dialog") as HTMLTemplateElement
-      ).content.cloneNode(true)
+      ).content.cloneNode(true),
     );
 
     this.container = this.shadowRoot?.querySelector(".__container")!;
@@ -32,7 +32,7 @@ export class CustomConfirm extends WebComponentBase {
    */
   private handler = async (
     ev: MouseEvent,
-    handler: (value: boolean) => void
+    handler: (value: boolean) => void,
   ) => {
     return new Promise((resolve, reject) => {
       let value: boolean = false;

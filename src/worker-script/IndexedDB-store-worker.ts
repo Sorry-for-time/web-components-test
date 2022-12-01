@@ -16,7 +16,7 @@ export function workerScriptBody(): void {
   // 创建一个连接到数据库的实例
   const idbRequest: IDBOpenDBRequest = indexedDB.open(
     user.databaseName /* 打开的数据库 */,
-    user.databaseVersion /* 数据库版本 */
+    user.databaseVersion /* 数据库版本 */,
   );
 
   idbRequest.onerror = (): void => {
@@ -32,7 +32,7 @@ export function workerScriptBody(): void {
       {
         keyPath: "id" /* 主键名称 */,
         autoIncrement: false /* 关闭主键自动递增 */,
-      }
+      },
     );
   };
 

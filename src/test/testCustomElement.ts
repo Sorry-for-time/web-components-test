@@ -4,7 +4,7 @@ import { iterableConstructorBackItemByDelay } from "../utils/iterableObjDelayBac
 export async function testCustomElement() {
   const dragView: HTMLDivElement = document.querySelector(".drag-view")!;
   const customCards: Array<CustomCard> = Array.from(
-    document.querySelectorAll("custom-card")
+    document.querySelectorAll("custom-card"),
   );
 
   customCards.forEach((e) => {
@@ -16,7 +16,7 @@ export async function testCustomElement() {
 
   for await (const v of iterableConstructorBackItemByDelay(
     customCards,
-    (): number => Math.random() * 1000
+    (): number => Math.random() * 1000,
   )) {
     dragView.appendChild(v as HTMLElement);
   }

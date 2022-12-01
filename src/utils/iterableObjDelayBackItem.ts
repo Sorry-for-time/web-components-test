@@ -9,7 +9,7 @@ type GENERATE_NUMBER_FUNC = () => number;
  */
 export async function* iterableConstructorBackItemByDelay<T>(
   iterableConstructor: Iterable<T>,
-  delay: number | GENERATE_NUMBER_FUNC = 1000
+  delay: number | GENERATE_NUMBER_FUNC = 1000,
 ) {
   for (const item of iterableConstructor) {
     yield await new Promise((resolve): void => {
@@ -17,7 +17,7 @@ export async function* iterableConstructorBackItemByDelay<T>(
         (): void => {
           resolve(item);
         },
-        typeof delay === "number" ? delay : delay()
+        typeof delay === "number" ? delay : delay(),
       );
     });
   }

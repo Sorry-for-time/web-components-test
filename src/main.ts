@@ -55,8 +55,8 @@ window.addEventListener("load", (): void => {
         });
       },
       true,
-      200
-    )
+      200,
+    ),
   );
 
   // 页面相关的初始化操作
@@ -82,7 +82,7 @@ window.addEventListener("load", (): void => {
     // 创建一个连接到数据库的请求实例
     const idbRequest: IDBOpenDBRequest = indexedDB.open(
       user.databaseName /* 打开的数据库名称 */,
-      user.databaseVersion /* 数据库版本 */
+      user.databaseVersion /* 数据库版本 */,
     );
 
     idbRequest.onupgradeneeded = (): void => {
@@ -93,7 +93,7 @@ window.addEventListener("load", (): void => {
         {
           keyPath: "id" /* 主键名称 */,
           autoIncrement: false /* 关闭主键自动递增 */,
-        }
+        },
       );
     };
 
@@ -107,12 +107,12 @@ window.addEventListener("load", (): void => {
       // 创建一个只读写事务源
       const transaction: IDBTransaction = database.transaction(
         user.storeObjectName,
-        "readonly"
+        "readonly",
       );
 
       // 获取数据对象实例
       const objectStore: IDBObjectStore = transaction.objectStore(
-        user.storeObjectName
+        user.storeObjectName,
       );
 
       // 进行读取数据操作
@@ -154,7 +154,7 @@ window.addEventListener("load", (): void => {
         });
       },
       true,
-      100
-    )
+      100,
+    ),
   );
 });
