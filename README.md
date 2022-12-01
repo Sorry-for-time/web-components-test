@@ -35,10 +35,11 @@
 > 节点稍微较多的情况下
 > <img src="./.assets/extreme.png" width="98%" />
 >
-> 自定义菜单
-> <img src="./.assets/menu2.png" width="48%" />
+> 自定义菜单(在卡片上时)
+> <img src="./.assets/menu2.png" width="68%" />
 >
-> <img src="./.assets/menu1.png" width="48%" />
+> 自定义菜单(在卡片外)
+> <img src="./.assets/menu1.png" width="68%" />
 >
 > 自定义确认框组件效果
 > <img src="./.assets/reset.png" width="98%" />
