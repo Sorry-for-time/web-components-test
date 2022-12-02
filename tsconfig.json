@@ -14,8 +14,8 @@
     "noImplicitAny": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
-    "newLine": "lf",
     "pretty": true,
+    "preserveConstEnums": true,
     "baseUrl": "./",
     "outDir": "./target"
   },
