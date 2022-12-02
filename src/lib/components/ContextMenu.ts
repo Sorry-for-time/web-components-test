@@ -13,10 +13,10 @@ const templateStr: string = `
     position: absolute;
     width: 240px;
     will-change: transform;
-    border-radius: 8px;
-    box-shadow: 0 0 3px black;
-    border: 1px solid hsla(0, 0%, 100%, 0.205);
-    background-color: hsla(0, 0%, 19%, 0.384);
+    border-radius: 12px;
+    box-shadow: 0 0 4px hsla(0, 0%, 19%, 0.484), 0 0 4px 1px hsla(0, 0%, 19%, 0.684) inset;
+    border: 1px solid hsla(0, 0%, 100%, 0.1);
+    background-color: hsla(0, 0%, 19%, 0.184);
     backdrop-filter: blur(12px);
     display: flex;
     flex-wrap: wrap;
@@ -25,7 +25,7 @@ const templateStr: string = `
 
   .wrapper.hide {
     z-index: -1;
-    transition: all 100ms ease-out;
+    transition: all 180ms ease-out;
     opacity: 0;
     visibility: hidden;
   }
@@ -40,7 +40,7 @@ const templateStr: string = `
     padding: 4px 8px;
     color: var(--text-color);
     border-radius: 5px;
-    transition: all 200ms ease-out;
+    transition: 120ms ease-out;
   }
 
   P:nth-child(3) {
@@ -48,7 +48,8 @@ const templateStr: string = `
   }
 
   p:hover {
-    background-color: rgba(240, 248, 255, 0.336);
+    background-color: rgba(240, 248, 255, 0.16);
+    text-shadow: 0 0 3px black;
   }
   </style>
 
@@ -58,6 +59,7 @@ const templateStr: string = `
   <p id="editor">编辑</p>
   <p id="delete">删除</p>
   <p id="export">导出内容</p>
+  <p id="remove-all">删除所有卡片</p>
   <p id="print">打印当前页面</p>
   </div>
 `;
@@ -90,6 +92,11 @@ const enum CONTEXT_MENU_ITEM {
    * 打印页面
    */
   PRINT = "print",
+
+  /**
+   * 移除所有卡片
+   */
+  REMOVE_ALL = "remove-all",
 }
 
 /**
@@ -187,11 +194,13 @@ export class ContextMenu extends WebComponentBase {
         // 添加到拖拽视图区域
         this.dragView.appendChild(newCard);
         break;
+
       // 删除当前卡片
       case CONTEXT_MENU_ITEM.DELETE:
         this.cardTarget && this.dragView.removeChild(this.cardTarget);
         break;
-      // 边界当前卡片
+
+      // 编辑当前卡片
       case CONTEXT_MENU_ITEM.EDITOR:
         const editor: HTMLDivElement =
           this.cardTarget?.shadowRoot?.querySelector(".content")!;
@@ -201,6 +210,8 @@ export class ContextMenu extends WebComponentBase {
         // 在获取光标后勾选所有的文本内容
         document.execCommand("selectAll", true);
         break;
+
+      // 导出卡片内容
       case CONTEXT_MENU_ITEM.EXPORT:
         const container: HTMLDivElement =
           this.cardTarget?.shadowRoot?.querySelector(".container")!;
@@ -217,8 +228,19 @@ export class ContextMenu extends WebComponentBase {
         anchor.click(); // 触发点击, 进行导出
         anchor = null; // 置空元素, 方便 vm 回收
         break;
+
+      // 打印当前页面
       case CONTEXT_MENU_ITEM.PRINT:
         setTimeout(print); /* 在主线程空闲后调用内置打印函数 */
+        break;
+
+      // 删除所有卡片
+      case CONTEXT_MENU_ITEM.REMOVE_ALL:
+        this.dragView
+          .querySelectorAll("custom-card")
+          .forEach((e: Element): void => {
+            this.dragView.removeChild(e);
+          });
         break;
       default:
         break;
@@ -249,10 +271,11 @@ export class ContextMenu extends WebComponentBase {
     // 如果目标为一个 CustomCard 实例的情况
     if (isCustomCardInstance) {
       this.allItems.forEach((p: HTMLParagraphElement): void => {
-        // 目标为卡片实例时不显示 "添加" 和 "打印" 选项
+        // 目标为卡片实例时不显示 "添加", "打印", "删除所有节点" 选项
         if (
           p.id !== CONTEXT_MENU_ITEM.ADD &&
-          p.id !== CONTEXT_MENU_ITEM.PRINT
+          p.id !== CONTEXT_MENU_ITEM.PRINT &&
+          p.id !== CONTEXT_MENU_ITEM.REMOVE_ALL
         ) {
           p.classList.remove("hide");
         }
@@ -260,13 +283,14 @@ export class ContextMenu extends WebComponentBase {
     }
     // 目标为拖拽可视区域
     else {
-      // 目标不为卡片实例时显示 "添加" 和 "打印" 选项
+      // 目标不为卡片实例时显示 "添加", "打印" 和 "删除所有卡片" 选项
       this.allItems.forEach((p: HTMLParagraphElement): void => {
         if (
           p.id === CONTEXT_MENU_ITEM.ADD ||
-          p.id === CONTEXT_MENU_ITEM.PRINT
+          p.id === CONTEXT_MENU_ITEM.PRINT ||
+          p.id === CONTEXT_MENU_ITEM.REMOVE_ALL
         ) {
-          p.classList.remove("hide");
+          p.removeAttribute("class");
         }
       });
     }
