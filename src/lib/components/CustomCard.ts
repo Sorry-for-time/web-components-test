@@ -345,9 +345,11 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   }
 
   /**
-   * 在文本编辑框失去焦点时同步修改元素自身的 innerText
+   * 在文本编辑框失去焦点时同步修改元素自身的 innerHTML
    */
-  private contentEditorChangeHandler = (ev: Event): void => {
+  private contentEditorChangeHandler: (ev: Event) => void = (
+    ev: Event,
+  ): void => {
     ev.preventDefault();
     ev.stopPropagation();
     this.innerHTML = this.textEditor.innerHTML!;
