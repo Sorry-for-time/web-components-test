@@ -48,16 +48,13 @@
 ## Notes
 
 - 不支持 ~~全系列 IE~~ (您或许可以考虑 Polyfill)
-- 您需要使用 `tsc` 进行编译(是的, 这不是一个 webpack 或者 vite 等构建工具的项目)
-  - 但项目已经设置好了 `tsconfig.json` 文件, 所以只需简单操作即可(这要求安装好了 node 环境和 typescript 模块)
+- 项目使用 vite 进行配置开发, 这要求已安装 node(node >= 14) 和 vue-cli
+  - 一切准备就绪
     ```sh
-    # 通过 zsh, bash, powershell, git-bash等 shell进入到项目根目录内(不要使用 cmd)
     cd web-components-test
-    tsc -p ./tsconfig.json --watch
+    npm i
+    npm run dev
     ```
-- 因为使用了 ES module 模块化系统, 所以需要一个 `dev server`, 比如 vscode 插件: `live server`
-- 此外, 因为使用了 sass 来简化编写样式, 所以您可能还需要一个转译插件, 比如 vscode 下的: `Live Sass` 插件
-- ~~当然, 最简单的方法是直接创建一个 vite 的 typescript 空项目里, npm 安装 sass 依赖, 代码拷贝过去, 直接 npm run dev~~
 
 ## Project address
 
