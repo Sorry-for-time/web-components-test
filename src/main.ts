@@ -1,13 +1,14 @@
-import "./config/registerComponent.js";
-import { CustomConfirm } from "./lib/components/CustomConfirm.js";
+import "./scss/base.scss";
+import "./config/registerComponent";
+import { CustomConfirm } from "./lib/components/CustomConfirm";
 import {
   useSwitchTheme,
   useResetToDefaultTheme,
-} from "./layout-ui-operation/switch-theme.js";
-import { useTypewriterEffect } from "./layout-ui-operation/typewriter-effect.js";
-import { debounce } from "./utils/performanceUtil.js";
-import { worker } from "./config/createWorkerThread.js";
-import { databaseUser } from "./config/databaseUserConfig.js";
+} from "./layout-ui-operation/switch-theme";
+import { useTypewriterEffect } from "./layout-ui-operation/typewriter-effect";
+import { debounce } from "./utils/performanceUtil";
+import { worker } from "./config/createWorkerThread";
+import { databaseUser } from "./config/databaseUserConfig";
 
 window.addEventListener("load", (): void => {
   useTypewriterEffect();
@@ -25,8 +26,8 @@ window.addEventListener("load", (): void => {
         });
       },
       true,
-      200,
-    ),
+      200
+    )
   );
 
   // 页面相关的初始化操作
@@ -52,7 +53,7 @@ window.addEventListener("load", (): void => {
     // 创建一个连接到数据库的请求实例
     const idbRequest: IDBOpenDBRequest = indexedDB.open(
       databaseUser.databaseName /* 打开的数据库名称 */,
-      databaseUser.databaseVersion /* 数据库版本 */,
+      databaseUser.databaseVersion /* 数据库版本 */
     );
 
     idbRequest.onupgradeneeded = (): void => {
@@ -63,7 +64,7 @@ window.addEventListener("load", (): void => {
         {
           keyPath: "id" /* 主键名称 */,
           autoIncrement: false /* 关闭主键自动递增 */,
-        },
+        }
       );
     };
 
@@ -77,12 +78,12 @@ window.addEventListener("load", (): void => {
       // 创建一个只读事务源
       const transaction: IDBTransaction = database.transaction(
         databaseUser.storeObjectName,
-        "readonly",
+        "readonly"
       );
 
       // 获取数据对象实例
       const objectStore: IDBObjectStore = transaction.objectStore(
-        databaseUser.storeObjectName,
+        databaseUser.storeObjectName
       );
 
       // 进行读取数据操作
@@ -137,7 +138,7 @@ window.addEventListener("load", (): void => {
         });
       },
       true,
-      100,
-    ),
+      100
+    )
   );
 });

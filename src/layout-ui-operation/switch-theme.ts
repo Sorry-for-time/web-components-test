@@ -57,7 +57,7 @@ export function useSwitchTheme(): void {
   else {
     /* 判断当前系统默认颜色是否处于暗色模式 */
     const colorMode: boolean = window.matchMedia(
-      "(prefers-color-scheme: dark)",
+      "(prefers-color-scheme: dark)"
     ).matches;
     if (colorMode) {
       document.body.classList.add(THEMES.dark);
@@ -89,7 +89,7 @@ export function useSwitchTheme(): void {
 
       /* 清空所有主题 */
       document.body.classList.remove(
-        ...document.body.classList.toString().split(" "),
+        ...document.body.classList.toString().split(" ")
       );
       let spanThemeStr: string = THEMES.normal;
       switch (span.id) {

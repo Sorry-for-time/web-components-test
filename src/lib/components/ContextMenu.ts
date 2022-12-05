@@ -1,5 +1,5 @@
-import { CustomCard } from "./CustomCard.js";
-import { WebComponentBase } from "../WebComponentBase.js";
+import { CustomCard } from "./CustomCard";
+import { WebComponentBase } from "../WebComponentBase";
 
 const templateStr: string = `
 <style>
@@ -153,7 +153,7 @@ export class ContextMenu extends WebComponentBase {
    * @param ev 鼠标单击产生的事件
    */
   private removeHideClass: (ev: MouseEvent) => void = (
-    ev: MouseEvent,
+    ev: MouseEvent
   ): void => {
     ev.preventDefault();
     ev.stopPropagation();
@@ -167,7 +167,7 @@ export class ContextMenu extends WebComponentBase {
    * @param ev 鼠标单击菜单选项按钮事件
    */
   private clickMenuItemHandler: (ev: MouseEvent) => void = (
-    ev: MouseEvent,
+    ev: MouseEvent
   ): void => {
     ev.preventDefault();
     ev.stopPropagation();
@@ -222,7 +222,7 @@ export class ContextMenu extends WebComponentBase {
         // 设置锚点链接
         anchor.setAttribute(
           "href",
-          "data:text/plain;charset=utf-8," + encodeURIComponent(text.trim()),
+          "data:text/plain;charset=utf-8," + encodeURIComponent(text.trim())
         );
         anchor.setAttribute("download", "context.txt"); // 设置下载链接
         anchor.click(); // 触发点击, 进行导出
@@ -254,7 +254,7 @@ export class ContextMenu extends WebComponentBase {
    * @param ev 鼠标点击右键触发的事件信息
    */
   private contextMenuHandler: (ev: MouseEvent) => void = (
-    ev: MouseEvent,
+    ev: MouseEvent
   ): void => {
     ev.preventDefault();
     ev.stopPropagation();
