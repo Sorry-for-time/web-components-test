@@ -21,7 +21,24 @@
   - 删除所有卡片
   - 导出卡片内文本
   - 打印页面
-- 自定义 `Dialog` 组件替代 `confirm()`
+- 自定义 `CustomConfirm` 组件代替 `原生 confirm() 确认对话框`
+  - 运行自定义设置标题
+  - 基于 Promise 封装, 便于通过 then/catch 的方式获取值进行逻辑判断
+    可以像这样子使用
+    ```typescript
+    const confirmDialog: CustomConfirm = new CustomConfirm();
+    // 点击按钮重置主题
+    const resetThemeButton: HTMLButtonElement = document.querySelector("#reset-theme")!;
+    resetThemeButton.addEventListener("click", (): void => {
+      confirmDialog
+        .confirm("您确定恢复系统默认主题吗?")
+        .then((): void => {
+          useResetToDefaultTheme();
+        })
+        .catch((_reason): void => {});
+    });
+    ```
+  - 自动移除监听器
 - 使用 `typescript` 编写, 带来更加友好的类型系统和舒适的 IDE 代码提示
 - 使用 sass(css 预处理器) 简化重复的样式编写
 - 其它:
