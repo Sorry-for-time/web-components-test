@@ -111,10 +111,13 @@ window.addEventListener("load", (): void => {
   // 点击按钮重置主题
   const resetThemeButton: HTMLButtonElement =
     document.querySelector("#reset-theme")!;
-  resetThemeButton.addEventListener(
-    "click",
-    debounce(useResetToDefaultTheme, true, 100),
-  );
+  resetThemeButton.addEventListener("click", (): void => {
+    dialog.alert("您确定恢复系统默认主题吗?", (value: boolean): void => {
+      if (value) {
+        useResetToDefaultTheme();
+      }
+    });
+  });
 
   const resetLayoutButton: HTMLButtonElement =
     document.querySelector("#reset-layout")!;
