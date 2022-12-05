@@ -12,8 +12,7 @@ import { databaseUser } from "@/config/databaseUserConfig";
 
 window.addEventListener("load", (): void => {
   useTypewriterEffect();
-  const dialog: CustomConfirm = new CustomConfirm();
-  document.body.appendChild(dialog);
+  const confirmDialog: CustomConfirm = new CustomConfirm();
 
   // 创建监听实例对象用于监听节点的属性变化
   const dragViewObserver = new MutationObserver(
@@ -49,6 +48,7 @@ window.addEventListener("load", (): void => {
   // 数据库实例引用
   let database: IDBDatabase | null = null;
 
+  // 数据库初始化操作
   function useDatabaseOperation(): void {
     // 创建一个连接到数据库的请求实例
     const idbRequest: IDBOpenDBRequest = indexedDB.open(
@@ -107,38 +107,34 @@ window.addEventListener("load", (): void => {
       };
     };
   }
+
   useDatabaseOperation();
 
   // 点击按钮重置主题
   const resetThemeButton: HTMLButtonElement =
     document.querySelector("#reset-theme")!;
   resetThemeButton.addEventListener("click", (): void => {
-    dialog.alert("您确定恢复系统默认主题吗?", (value: boolean): void => {
-      if (value) {
+    confirmDialog
+      .confirm("您确定恢复系统默认主题吗?")
+      .then((): void => {
         useResetToDefaultTheme();
-      }
-    });
+      })
+      .catch((_reason): void => {});
   });
 
   const resetLayoutButton: HTMLButtonElement =
     document.querySelector("#reset-layout")!;
   // 点击恢复默认布局
-  resetLayoutButton.addEventListener(
-    "click",
-    debounce(
-      () => {
-        dialog.alert("您确定恢复初始界面吗?", (value: boolean) => {
-          if (value) {
-            worker.postMessage({
-              payload: "",
-              isResetSignal: true,
-            });
-            window.location.reload();
-          }
+  resetLayoutButton.addEventListener("click", (): void => {
+    confirmDialog
+      .confirm("您确定恢复初始界面吗?")
+      .then((): void => {
+        worker.postMessage({
+          payload: "",
+          isResetSignal: true,
         });
-      },
-      true,
-      100
-    )
-  );
+        window.location.reload();
+      })
+      .catch((_reason): void => {});
+  });
 });
