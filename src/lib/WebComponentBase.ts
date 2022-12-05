@@ -1,4 +1,4 @@
-import { WebComponentDefine } from "./interface/WebComponentDefine.js";
+import { WebComponentDefine } from "@/lib/interface/WebComponentDefine";
 
 export abstract class WebComponentBase
   extends HTMLElement
@@ -17,12 +17,14 @@ export abstract class WebComponentBase
   /**
    * 组件的属性被更改时触发的回调, 这个方法需要配合具体实现类的的 static get observedAttributes(): Array<string> 方法
    * @param name 属性名称
-   * @param _oldValue 旧值
+   * @param oldValue 旧值
    * @param newValue 新值
    */
   attributeChangedCallback?(
     name?: string,
-    _oldValue?: string,
+    oldValue?: string,
     newValue?: string
-  ): void {}
+  ): void {
+    console.log(name, oldValue, newValue);
+  }
 }

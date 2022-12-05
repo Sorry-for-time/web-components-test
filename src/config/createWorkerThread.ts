@@ -1,4 +1,4 @@
-import { workerScriptBody } from "../worker-script/IndexedDB-store-worker";
+import { workerScriptBody } from "@/worker-script/IndexedDB-store-worker";
 const workerScriptRaw: string = workerScriptBody
   .toString()
   .replace("function workerScriptBody() {", "");

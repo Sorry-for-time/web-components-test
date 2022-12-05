@@ -1,4 +1,4 @@
-import { WebComponentBase } from "../WebComponentBase";
+import { WebComponentBase } from "@/lib/WebComponentBase";
 const templateStr: string = `
 <style>
   .active {

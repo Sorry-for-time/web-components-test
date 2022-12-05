@@ -1,5 +1,5 @@
-import { CustomCard } from "./CustomCard";
-import { WebComponentBase } from "../WebComponentBase";
+import { CustomCard } from "@/lib/components/CustomCard";
+import { WebComponentBase } from "@/lib/WebComponentBase";
 
 const templateStr: string = `
 <style>

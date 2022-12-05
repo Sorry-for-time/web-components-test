@@ -1,14 +1,14 @@
-import "./scss/base.scss";
-import "./config/registerComponent";
-import { CustomConfirm } from "./lib/components/CustomConfirm";
+import "@/scss/base.scss";
+import "@/config/registerComponent";
+import { CustomConfirm } from "@/lib/components/CustomConfirm";
 import {
   useSwitchTheme,
   useResetToDefaultTheme,
-} from "./layout-ui-operation/switch-theme";
-import { useTypewriterEffect } from "./layout-ui-operation/typewriter-effect";
-import { debounce } from "./utils/performanceUtil";
-import { worker } from "./config/createWorkerThread";
-import { databaseUser } from "./config/databaseUserConfig";
+} from "@/layout-ui-operation/switch-theme";
+import { useTypewriterEffect } from "@/layout-ui-operation/typewriter-effect";
+import { debounce } from "@/utils/performanceUtil";
+import { worker } from "@/config/createWorkerThread";
+import { databaseUser } from "@/config/databaseUserConfig";
 
 window.addEventListener("load", (): void => {
   useTypewriterEffect();
