@@ -21,11 +21,6 @@ window.addEventListener("load", (): void => {
   const dialog: CustomConfirm = new CustomConfirm();
   document.body.appendChild(dialog);
 
-  // 点击按钮重置主题
-  document
-    .querySelector("#reset-theme")
-    ?.addEventListener("click", debounce(useResetToDefaultTheme, true, 100));
-
   // 创建监听实例对象用于监听节点的属性变化
   const dragViewObserver = new MutationObserver(
     // 节点属性发送变化就通过 webworker 线程将新节点字符串推入 IndexedDB 数据库当中
@@ -60,7 +55,7 @@ window.addEventListener("load", (): void => {
   // 数据库实例引用
   let database: IDBDatabase | null = null;
 
-  function databaseOperation(): void {
+  function useDatabaseOperation(): void {
     // 创建一个连接到数据库的请求实例
     const idbRequest: IDBOpenDBRequest = indexedDB.open(
       user.databaseName /* 打开的数据库名称 */,
@@ -118,10 +113,20 @@ window.addEventListener("load", (): void => {
       };
     };
   }
-  databaseOperation();
+  useDatabaseOperation();
 
+  // 点击按钮重置主题
+  const resetThemeButton: HTMLButtonElement =
+    document.querySelector("#reset-theme")!;
+  resetThemeButton.addEventListener(
+    "click",
+    debounce(useResetToDefaultTheme, true, 100),
+  );
+
+  const resetLayoutButton: HTMLButtonElement =
+    document.querySelector("#reset-layout")!;
   // 点击恢复默认布局
-  document.querySelector("#reset-layout")!.addEventListener(
+  resetLayoutButton.addEventListener(
     "click",
     debounce(
       () => {
