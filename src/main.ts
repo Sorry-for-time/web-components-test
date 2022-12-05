@@ -1,24 +1,12 @@
-import { CustomCard } from "./lib/components/CustomCard.js";
-import { ContextMenu } from "./lib/components/ContextMenu.js";
+import "./config/registerComponent.js";
 import { CustomConfirm } from "./lib/components/CustomConfirm.js";
-import { workerScriptBody } from "./worker-script/IndexedDB-store-worker.js";
 import {
   useSwitchTheme,
   useResetToDefaultTheme,
 } from "./layout-ui-operation/switch-theme.js";
 import { useTypewriterEffect } from "./layout-ui-operation/typewriter-effect.js";
 import { debounce } from "./utils/performanceUtil.js";
-
-const workerScriptRaw: string = workerScriptBody
-  .toString()
-  .replace("function workerScriptBody() {", "");
-// worker 脚本字符串
-const workerScript: string = workerScriptRaw
-  .substring(0, workerScriptRaw.lastIndexOf("}"))
-  .replaceAll("\n", "")
-  .trim();
-// 创建线程
-const worker = new Worker(URL.createObjectURL(new Blob([workerScript])));
+import { worker } from "./config/createWorkerThread.js";
 
 // 数据库配置信息
 const user = {
@@ -27,14 +15,6 @@ const user = {
   storeObjectName: "data-store" /* 实例对象名称 */,
   storeObjectId: "data-view-key" /* 唯一 key */,
 };
-
-{
-  // CustomCard.debugBucket.open = true; /* 打开自定义组件的日志记录输出 */
-  // 注册自定义组件
-  customElements.define("custom-card", CustomCard);
-  customElements.define("context-menu", ContextMenu);
-  customElements.define("custom-dialog", CustomConfirm);
-}
 
 window.addEventListener("load", (): void => {
   useTypewriterEffect();
