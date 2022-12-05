@@ -1,5 +1,4 @@
-import { WebComponentBase } from "@/lib/WebComponentBase.js";
-
+import { WebComponentBase } from "@/lib/WebComponentBase";
 const templateStr: string = `
 <style>
   .__container {
@@ -10,12 +9,12 @@ const templateStr: string = `
     right: 0;
     bottom: 0;
     background-color: hsla(0, 0%, 0%, 0.726);
+    transition: all ease-out 200ms;
   }
 
   .__container.hide {
-    transition: all ease-out 200ms;
     opacity: 0;
-    z-index: -1;
+    z-index: -23;
     visibility: none;
   }
 
@@ -31,8 +30,9 @@ const templateStr: string = `
     height: 30%;
     background: scroll center no-repeat
       linear-gradient(
-        hsla(180, 100%, 50%, 0.281),
-        rgba(128, 0, 128, 0.233)
+        23deg,
+        hsla(210, 100%, 60%, 0.181),
+        rgba(128, 0, 128, 0.133)
       );
     backdrop-filter: blur(12px) brightness(1.2);
     border-radius: 10px;
@@ -95,69 +95,55 @@ export class CustomConfirm extends WebComponentBase {
   constructor() {
     super();
     this.attachShadow({ mode: "open" }).innerHTML = templateStr;
-
     this.container = this.shadowRoot?.querySelector(".__container")!;
     this.titleEl = this.shadowRoot?.querySelector("h1")!;
     this.confirmButton = this.shadowRoot?.querySelector("#confirm")!;
     this.cancelButton = this.shadowRoot?.querySelector("#cancel")!;
-  }
-
-  disconnectedCallback(): void {
-    this.container!.onclick = null;
+    if (!document.body.contains(this)) {
+      document.body.appendChild(this);
+    }
   }
 
   /**
-   * 弹窗处处理函数
-   * @param ev 鼠标点击事件
-   * @param handler
-   * @returns
+   * @description 确认框
+   * @author Shalling <3330689546@qq.com>
+   * @date 2022-12-05 23:12:57
+   * @param {string} [title="您确定关闭吗?"] 弹窗标题
+   * @returns {*}  {Promise<boolean>}
+   * @memberof CustomConfirm
    */
-  private handler = async (
-    ev: MouseEvent,
-    handler: (value: boolean) => void
-  ) => {
-    return new Promise((resolve, reject) => {
-      let value: boolean = false;
-      switch (ev.target) {
-        case this.confirmButton:
-          value = true;
-          break;
-        case this.cancelButton:
-          value = false;
-          break;
-        default:
-          break;
-      }
-      this.container?.classList.add("hide");
-      if (value) {
-        resolve(true);
-        this.container!.onclick = null;
-      } else {
-        reject(false);
-      }
-    })
-      .then(async (success) => {
-        if (typeof handler === "function") {
-          handler(success as boolean);
-        }
-      })
-      .catch((reason) => {
-        if (typeof handler === "function") {
-          handler(reason);
-        }
-      });
-  };
+  public async confirm(title: string = "您确定关闭吗?"): Promise<boolean> {
+    this.titleEl && (this.titleEl.textContent = title); /* 设置标题 */
+    this.container?.classList.remove("hide"); /* 移除隐藏样式 */
 
-  /**
-   * 调用弹窗函
-   * @param title 对话框标题
-   * @param handler  处理函数
-   */
-  public alert(title: string = "", handler: (value: boolean) => void): void {
-    this.titleEl!.innerText = title;
-    this.container?.classList.remove("hide");
-    this.container!.onclick = (ev: MouseEvent): void => {
-      this.handler(ev, handler);
-    };
+    const _that: this = this;
+    return new Promise((resolve, reject): void => {
+      this.container?.addEventListener(
+        "click",
+        function clickHandler(ev: MouseEvent): void {
+          // 移除监听器
+          _that.container?.removeEventListener("click", clickHandler);
+
+          let value: boolean = false;
+          switch (ev.target) {
+            case _that.confirmButton:
+              value = true;
+              break;
+            case _that.cancelButton:
+            default:
+              value = false;
+              break;
+          }
+
+          _that.container?.classList.add("hide"); // 恢复隐藏样式
+          // 处理值
+          if (value) {
+            resolve(value);
+          } else {
+            reject(value);
+          }
+        }
+      );
+    });
   }
 }
