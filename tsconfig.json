@@ -1,24 +1,20 @@
 {
   "compilerOptions": {
-    "incremental": true,
     "target": "ESNext",
+    "useDefineForClassFields": true,
     "module": "ESNext",
-    "esModuleInterop": true,
-    "lib": ["ESNext", "DOM", "WebWorker"],
-    "forceConsistentCasingInFileNames": true,
-    "removeComments": false,
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Node",
     "strict": true,
-    "allowJs": true,
-    "sourceMap": true,
-    "declaration": true,
-    "noImplicitAny": true,
-    "skipLibCheck": true,
+    "resolveJsonModule": true,
     "experimentalDecorators": true,
-    "pretty": true,
-    "preserveConstEnums": true,
-    "baseUrl": "./",
-    "outDir": "./target"
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true
   },
-  "include": ["./src/**/*"],
-  "exclude": ["./src/scss"]
+  "include": ["src"]
 }
