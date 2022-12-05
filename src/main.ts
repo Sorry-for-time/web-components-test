@@ -7,14 +7,7 @@ import {
 import { useTypewriterEffect } from "./layout-ui-operation/typewriter-effect.js";
 import { debounce } from "./utils/performanceUtil.js";
 import { worker } from "./config/createWorkerThread.js";
-
-// 数据库配置信息
-const user = {
-  databaseName: "data-view" /* 数据库名称 */,
-  databaseVersion: 1 /* 数据库版本号 */,
-  storeObjectName: "data-store" /* 实例对象名称 */,
-  storeObjectId: "data-view-key" /* 唯一 key */,
-};
+import { databaseUser } from "./config/databaseUserConfig.js";
 
 window.addEventListener("load", (): void => {
   useTypewriterEffect();
@@ -58,15 +51,15 @@ window.addEventListener("load", (): void => {
   function useDatabaseOperation(): void {
     // 创建一个连接到数据库的请求实例
     const idbRequest: IDBOpenDBRequest = indexedDB.open(
-      user.databaseName /* 打开的数据库名称 */,
-      user.databaseVersion /* 数据库版本 */,
+      databaseUser.databaseName /* 打开的数据库名称 */,
+      databaseUser.databaseVersion /* 数据库版本 */,
     );
 
     idbRequest.onupgradeneeded = (): void => {
       database = idbRequest.result;
       /* 创建数据库的实例对象 */
       database.createObjectStore(
-        user.storeObjectName, // 数据库实例对象名称(有点类似表)
+        databaseUser.storeObjectName, // 数据库实例对象名称(有点类似表)
         {
           keyPath: "id" /* 主键名称 */,
           autoIncrement: false /* 关闭主键自动递增 */,
@@ -83,17 +76,17 @@ window.addEventListener("load", (): void => {
       database = idbRequest.result;
       // 创建一个只读事务源
       const transaction: IDBTransaction = database.transaction(
-        user.storeObjectName,
+        databaseUser.storeObjectName,
         "readonly",
       );
 
       // 获取数据对象实例
       const objectStore: IDBObjectStore = transaction.objectStore(
-        user.storeObjectName,
+        databaseUser.storeObjectName,
       );
 
       // 进行读取数据操作
-      const req: IDBRequest<any> = objectStore.get(user.storeObjectId);
+      const req: IDBRequest<any> = objectStore.get(databaseUser.storeObjectId);
 
       req.onsuccess = (): void => {
         const packet: any = req.result;
