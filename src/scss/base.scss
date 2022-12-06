@@ -114,7 +114,7 @@ body {
     display: grid;
     align-items: center;
     column-gap: 10px;
-    grid-template-columns: 330px 150px;
+    grid-template-columns: 1fr 1fr;
     justify-content: space-between;
 
     .reset-items {
@@ -143,8 +143,10 @@ body {
     .theme-items {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: end;
+      column-gap: 15px;
       span {
+        align-items: stretch;
         flex: auto;
         max-width: 20px;
         height: 20px;
