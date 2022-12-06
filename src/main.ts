@@ -7,7 +7,7 @@ import {
   useResetToDefaultTheme,
 } from "@/layout-ui-operation/switch-theme";
 import { useTypewriterEffect } from "@/layout-ui-operation/typewriter-effect";
-import { debounce } from "@/utils/performanceUtil";
+import { debounce, throttle } from "@/utils/performanceUtil";
 import { worker } from "@/config/createWorkerThread";
 import { databaseUser } from "@/config/databaseUserConfig";
 
@@ -149,12 +149,19 @@ window.addEventListener("load", (): void => {
 
   const messageBtn: HTMLButtonElement =
     document.querySelector("#send-message")!;
-  messageBtn.addEventListener("click", (): void => {
-    customMessage.message(
-      crypto.randomUUID().substring(12),
-      ["info", "success", "warning", "danger"][
-        Math.floor(Math.random() * 4)
-      ] as MessageType
-    );
-  });
+  messageBtn.addEventListener(
+    "click",
+    throttle(
+      (): void => {
+        customMessage.message(
+          crypto.randomUUID().substring(12),
+          ["info", "success", "warning", "danger"][
+            Math.floor(Math.random() * 4)
+          ] as MessageType
+        );
+      },
+      true,
+      80
+    )
+  );
 });
