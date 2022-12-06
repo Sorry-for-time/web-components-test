@@ -13,6 +13,7 @@ import { databaseUser } from "@/config/databaseUserConfig";
 window.addEventListener("load", (): void => {
   useTypewriterEffect();
   const confirmDialog: CustomConfirm = new CustomConfirm();
+  document.body.appendChild(confirmDialog);
 
   // 创建监听实例对象用于监听节点的属性变化
   const dragViewObserver = new MutationObserver(

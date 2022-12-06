@@ -99,9 +99,6 @@ export class CustomConfirm extends WebComponentBase {
     this.titleEl = this.shadowRoot?.querySelector("h1")!;
     this.confirmButton = this.shadowRoot?.querySelector("#confirm")!;
     this.cancelButton = this.shadowRoot?.querySelector("#cancel")!;
-    if (!document.body.contains(this)) {
-      document.body.appendChild(this);
-    }
   }
 
   /**
