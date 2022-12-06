@@ -1,6 +1,7 @@
 import "@/scss/base.scss";
 import "@/config/registerComponent";
 import { CustomConfirm } from "@/lib/components/CustomConfirm";
+import { CustomMessage, MessageType } from "@/lib/components/CustomMessage";
 import {
   useSwitchTheme,
   useResetToDefaultTheme,
@@ -13,7 +14,9 @@ import { databaseUser } from "@/config/databaseUserConfig";
 window.addEventListener("load", (): void => {
   useTypewriterEffect();
   const confirmDialog: CustomConfirm = new CustomConfirm();
+  const customMessage: CustomMessage = new CustomMessage();
   document.body.appendChild(confirmDialog);
+  document.body.appendChild(customMessage);
 
   // 创建监听实例对象用于监听节点的属性变化
   const dragViewObserver = new MutationObserver(
@@ -119,8 +122,11 @@ window.addEventListener("load", (): void => {
       .confirm("您确定恢复系统默认主题吗?")
       .then((): void => {
         useResetToDefaultTheme();
+        customMessage.message("操作成功", "success");
       })
-      .catch((_reason): void => {});
+      .catch((): void => {
+        customMessage.message("操作取消", "info");
+      });
   });
 
   const resetLayoutButton: HTMLButtonElement =
@@ -136,6 +142,19 @@ window.addEventListener("load", (): void => {
         });
         window.location.reload();
       })
-      .catch((_reason): void => {});
+      .catch((): void => {
+        customMessage.message("操作取消", "info");
+      });
+  });
+
+  const messageBtn: HTMLButtonElement =
+    document.querySelector("#send-message")!;
+  messageBtn.addEventListener("click", (): void => {
+    customMessage.message(
+      crypto.randomUUID().substring(12),
+      ["info", "success", "warning", "danger"][
+        Math.floor(Math.random() * 4)
+      ] as MessageType
+    );
   });
 });
