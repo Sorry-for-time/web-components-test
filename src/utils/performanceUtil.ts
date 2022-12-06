@@ -44,7 +44,7 @@ export const throttle = (
   ...params: Array<any>
 ): THROTTLE_INSTANCE => {
   let locker: boolean = false;
-  return () => {
+  return (): void => {
     if (startImmediately) {
       startImmediately = false;
       locker = true;
