@@ -14,12 +14,12 @@ const templateStr = `
     --waning-bgc: hsla(35, 25%, 13%, 0.808);
     --danger-bgc: hsla(0, 18%, 14%, 0.808);
 
+    z-index: 12;
     position: absolute;
     width: 400px;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    height: 100%;
     user-select: none;
   }
 
@@ -96,7 +96,7 @@ export class CustomMessage extends WebComponentBase {
     super();
     this.attachShadow({ mode: "open" });
     this.shadowRoot!.innerHTML = templateStr;
-    this.container = this.shadowRoot?.querySelector(".__wrapper")!;
+    this.container = this.shadowRoot!.querySelector(".__wrapper")!;
   }
 
   public message(title: string = "", type: MessageType = "info"): void {
