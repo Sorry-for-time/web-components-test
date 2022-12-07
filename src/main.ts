@@ -1,7 +1,7 @@
 import "@/scss/base.scss";
 import "@/config/registerComponent";
-import { CustomConfirm } from "@/lib/components/CustomConfirm";
-import { CustomMessage, MessageType } from "@/lib/components/CustomMessage";
+import { customConfirm } from "@/lib/components/CustomConfirm";
+import { customMessage, MessageType } from "@/lib/components/CustomMessage";
 import {
   useSwitchTheme,
   useResetToDefaultTheme,
@@ -13,9 +13,7 @@ import { databaseUser } from "@/config/databaseUserConfig";
 
 window.addEventListener("load", (): void => {
   useTypewriterEffect();
-  const confirmDialog: CustomConfirm = new CustomConfirm();
-  const customMessage: CustomMessage = new CustomMessage();
-  document.body.appendChild(confirmDialog);
+  document.body.appendChild(customConfirm);
   document.body.appendChild(customMessage);
 
   // 创建监听实例对象用于监听节点的属性变化
@@ -118,7 +116,7 @@ window.addEventListener("load", (): void => {
   const resetThemeButton: HTMLButtonElement =
     document.querySelector("#reset-theme")!;
   resetThemeButton.addEventListener("click", (): void => {
-    confirmDialog
+    customConfirm
       .confirm("您确定恢复系统默认主题吗?")
       .then((): void => {
         useResetToDefaultTheme();
@@ -133,7 +131,7 @@ window.addEventListener("load", (): void => {
     document.querySelector("#reset-layout")!;
   // 点击恢复默认布局
   resetLayoutButton.addEventListener("click", (): void => {
-    confirmDialog
+    customConfirm
       .confirm("您确定恢复初始界面吗?")
       .then((): void => {
         worker.postMessage({
