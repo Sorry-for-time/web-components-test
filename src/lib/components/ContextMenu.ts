@@ -67,7 +67,7 @@ const templateStr: string = `
 /**
  * 定义菜单选项里的选项名称
  */
-const enum CONTEXT_MENU_ITEM {
+const enum MenuItemType {
   /**
    * 添加一个新的卡片实例
    */
@@ -111,7 +111,7 @@ export class ContextMenu extends WebComponentBase {
   private dragView: HTMLDivElement;
   private cardTarget: CustomCard | null = null;
 
-  /* 记录点击后经过边界处理的光位置 */
+  // 记录点击后经过边界处理的光位置
   private clickPosition: {
     left: number;
     top: number;
@@ -175,7 +175,7 @@ export class ContextMenu extends WebComponentBase {
     const target: HTMLParagraphElement = ev.target as HTMLParagraphElement;
     switch (target.id) {
       // 添加新的卡片
-      case CONTEXT_MENU_ITEM.ADD:
+      case MenuItemType.ADD:
         const newCard: CustomCard = new CustomCard();
         let cardWidth: number = 260,
           cardHeight: number = 70;
@@ -188,59 +188,44 @@ export class ContextMenu extends WebComponentBase {
         if (realTop + cardHeight >= this.dragView.clientHeight) {
           realTop = this.dragView.offsetHeight - cardHeight - 4;
         }
-        // 设置新添加卡片的位置
-        newCard.setAttribute("left", realLeft + "px");
+        newCard.setAttribute("left", realLeft + "px"); // 设置新添加卡片的位置
         newCard.setAttribute("top", realTop + "px");
-        // 添加到拖拽视图区域
-        this.dragView.appendChild(newCard);
+        this.dragView.appendChild(newCard); // 添加到拖拽视图区域
         break;
-
       // 删除当前卡片
-      case CONTEXT_MENU_ITEM.DELETE:
+      case MenuItemType.DELETE:
         this.cardTarget && this.dragView.removeChild(this.cardTarget);
         break;
-
       // 编辑当前卡片
-      case CONTEXT_MENU_ITEM.EDITOR:
+      case MenuItemType.EDITOR:
         const editor: HTMLDivElement =
           this.cardTarget?.shadowRoot?.querySelector(".content")!;
         editor.setAttribute("contenteditable", "true");
-        // 聚焦光标
-        editor.focus();
-        // 在获取光标后勾选所有的文本内容
-        document.execCommand("selectAll", true);
+        editor.focus(); // 聚焦光标
+        document.execCommand("selectAll", true); // 在获取光标后勾选所有的文本内容
         break;
-
       // 导出卡片内容
-      case CONTEXT_MENU_ITEM.EXPORT:
+      case MenuItemType.EXPORT:
         const container: HTMLDivElement =
           this.cardTarget?.shadowRoot?.querySelector(".container")!;
         let anchor: HTMLAnchorElement | null = document.createElement("a");
-        // 获取文本内容
         const text: string =
-          container.querySelector(".content")?.textContent || "";
-        // 设置锚点链接
+          container.querySelector(".content")?.textContent || ""; // 获取文本内容
         anchor.setAttribute(
           "href",
           "data:text/plain;charset=utf-8," + encodeURIComponent(text.trim())
-        );
+        ); // 设置锚点链接
         anchor.setAttribute("download", "context.txt"); // 设置下载链接
-        anchor.click(); // 触发点击, 进行导出
-        anchor = null; // 置空元素, 方便 vm 回收
+        anchor.click(); // 触发点击, 进行导出操作
+        anchor = null; //  置空元素
         break;
-
       // 打印当前页面
-      case CONTEXT_MENU_ITEM.PRINT:
-        setTimeout(print); /* 在主线程空闲后调用内置打印函数 */
+      case MenuItemType.PRINT:
+        queueMicrotask(print);
         break;
-
       // 删除所有卡片
-      case CONTEXT_MENU_ITEM.REMOVE_ALL:
-        this.dragView
-          .querySelectorAll("custom-card")
-          .forEach((e: Element): void => {
-            this.dragView.removeChild(e);
-          });
+      case MenuItemType.REMOVE_ALL:
+        this.dragView.innerHTML = "";
         break;
       default:
         break;
@@ -273,9 +258,9 @@ export class ContextMenu extends WebComponentBase {
       this.allItems.forEach((p: HTMLParagraphElement): void => {
         // 目标为卡片实例时不显示 "添加", "打印", "删除所有节点" 选项
         if (
-          p.id !== CONTEXT_MENU_ITEM.ADD &&
-          p.id !== CONTEXT_MENU_ITEM.PRINT &&
-          p.id !== CONTEXT_MENU_ITEM.REMOVE_ALL
+          p.id !== MenuItemType.ADD &&
+          p.id !== MenuItemType.PRINT &&
+          p.id !== MenuItemType.REMOVE_ALL
         ) {
           p.classList.remove("hide");
         }
@@ -286,24 +271,22 @@ export class ContextMenu extends WebComponentBase {
       // 目标不为卡片实例时显示 "添加", "打印" 和 "删除所有卡片" 选项
       this.allItems.forEach((p: HTMLParagraphElement): void => {
         if (
-          p.id === CONTEXT_MENU_ITEM.ADD ||
-          p.id === CONTEXT_MENU_ITEM.PRINT ||
-          p.id === CONTEXT_MENU_ITEM.REMOVE_ALL
+          p.id === MenuItemType.ADD ||
+          p.id === MenuItemType.PRINT ||
+          p.id === MenuItemType.REMOVE_ALL
         ) {
           p.removeAttribute("class");
         }
       });
     }
 
-    /* 右键菜单的宽高值 */
+    // 右键菜单的宽高值
     const menuWidth: number = this.container.offsetWidth;
     const menuHeight: number = this.container.offsetHeight;
-
-    /* 取得父级容器的宽高 */
+    // 取得父级容器的宽高
     const activeViewWidth: number = this.dragView.offsetWidth;
     const activeViewHeight: number = this.dragView.offsetHeight;
-
-    /* 边界处理 */
+    // 边界处理
     let neededLeft: number = ev.offsetX;
     let neededTop: number = ev.offsetY;
 
@@ -319,16 +302,13 @@ export class ContextMenu extends WebComponentBase {
     if (neededTop >= activeViewHeight - menuHeight) {
       neededTop = activeViewHeight - menuHeight - 4;
     }
-
-    /* 更新记录的信息 */
+    // 更新记录的信息
     this.clickPosition.left = neededLeft;
     this.clickPosition.top = neededTop;
-
-    /* 应用变换 */
+    // 应用变换
     this.container.style.setProperty("--x", `${this.clickPosition.left}px`);
     this.container.style.setProperty("--y", `${this.clickPosition.top}px`);
-
-    /* 移除样式 */
+    // 移除样式
     if (this.container.classList.contains("hide")) {
       this.container.classList.remove("hide");
     }
