@@ -1,5 +1,7 @@
 import { CustomCard } from "@/lib/components/CustomCard";
 import { WebComponentBase } from "@/lib/WebComponentBase";
+import { customConfirm } from "@/lib/components/CustomConfirm";
+import { customMessage } from "@/lib/components/CustomMessage";
 
 const templateStr: string = `
 <style>
@@ -144,7 +146,6 @@ export class ContextMenu extends WebComponentBase {
   disconnectedCallback(): void {
     this.container.removeEventListener("click", this.clickMenuItemHandler);
     this.dragView.removeEventListener("contextmenu", this.contextMenuHandler);
-
     document.removeEventListener("click", this.removeHideClass);
   }
 
@@ -225,7 +226,15 @@ export class ContextMenu extends WebComponentBase {
         break;
       // 删除所有卡片
       case MenuItemType.REMOVE_ALL:
-        this.dragView.innerHTML = "";
+        customConfirm
+          .confirm("您确定删除所有卡片(这将没办法恢复)?")
+          .then((): void => {
+            this.dragView.innerHTML = "";
+            customMessage.message("操作成功", "success");
+          })
+          .catch((): void => {
+            customMessage.message("取消操作...", "info");
+          });
         break;
       default:
         break;
