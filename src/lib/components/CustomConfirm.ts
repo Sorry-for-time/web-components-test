@@ -92,6 +92,11 @@ export class CustomConfirm extends WebComponentBase {
   private cancelButton: HTMLButtonElement | null;
   private titleEl: HTMLParagraphElement | null = null;
 
+  static {
+    // 设置自动注册
+    customElements.define("custom-confirm", CustomConfirm);
+  }
+
   constructor() {
     super();
     this.attachShadow({ mode: "open" }).innerHTML = templateStr;
@@ -112,10 +117,10 @@ export class CustomConfirm extends WebComponentBase {
   public async confirm(title: string = "您确定关闭吗?"): Promise<boolean> {
     this.titleEl && (this.titleEl.textContent = title); /* 设置标题 */
     this.container?.classList.remove("hide"); /* 移除隐藏样式 */
-
     const _that: this = this;
+
     return new Promise((resolve, reject): void => {
-      this.container?.addEventListener(
+      _that.container?.addEventListener(
         "click",
         function clickHandler(ev: MouseEvent): void {
           // 移除监听器
@@ -144,3 +149,8 @@ export class CustomConfirm extends WebComponentBase {
     });
   }
 }
+
+/**
+ * 默认导出实例
+ */
+export const customConfirm: CustomConfirm = new CustomConfirm();
