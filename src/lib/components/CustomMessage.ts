@@ -26,7 +26,7 @@ const templateStr = `
   .message {
     margin-top: 10px;
     width: 100%;
-    height: 45px;
+    min-height: 45px;
     border-radius: 8px;
     box-shadow: 0 0 3px hsla(0, 0%, 0%, 0.233);
     display: flex;
@@ -91,6 +91,11 @@ const templateStr = `
 <div class="__wrapper"></div>
 `;
 export class CustomMessage extends WebComponentBase {
+  static {
+    // 自动注册
+    customElements.define("custom-message", CustomMessage);
+  }
+
   private container: HTMLDivElement | null = null;
   constructor() {
     super();
@@ -121,3 +126,8 @@ export class CustomMessage extends WebComponentBase {
     });
   }
 }
+
+/**
+ * 默认导出实例
+ */
+export const customMessage: CustomMessage = new CustomMessage();
