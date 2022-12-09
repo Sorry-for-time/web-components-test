@@ -48,6 +48,7 @@ const templateStr: string = `
     padding: 10px;
     user-select: none;
     color: transparent;
+    will-change: transform, top, left;
     background: scroll no-repeat center
       linear-gradient(
         109deg,
@@ -252,9 +253,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
         applyTop =
           this.parentElement!.clientHeight - this.container.clientHeight;
       }
-      this.container.style.left = "0px";
-      this.container.style.top = "0px";
-      this.container.style.transform = `translate(${applyLeft}px, ${applyTop}px)`;
+      this.container.style.cssText = `left:unset;top:unset;transform:translate3d(${applyLeft}px,${applyTop}px,1px)`;
       this.defaultPositionBucket.left = applyLeft;
       this.defaultPositionBucket.top = applyTop;
     };
@@ -264,9 +263,11 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
       if (this.container.classList.contains("active")) {
         this.container.classList.remove("active");
       }
-      this.container.style.transform = "unset";
+      this.container.style.transform = `translate3D(0px, 0px, 1px)`;
       this.container.style.left = `${this.defaultPositionBucket.left}px`;
       this.container.style.top = `${this.defaultPositionBucket.top}px`;
+
+      // 更新自定义标签属性, 使之被 MutationObserver 捕获到状态变更
       this.setAttribute("left", `${this.defaultPositionBucket.left}`);
       this.setAttribute("top", `${this.defaultPositionBucket.top}`);
       document.removeEventListener("mousemove", mouseMove);
