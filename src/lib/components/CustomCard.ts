@@ -17,8 +17,7 @@ const templateStr: string = `
     border-radius: 6px;
     overflow: hidden;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.418);
-    background: scroll no-repeat center
-      linear-gradient(rgba(0, 255, 255, 0.205), rgba(128, 0, 128, 0.247));
+    background: scroll no-repeat center linear-gradient(rgba(0, 255, 255, 0.205), rgba(128, 0, 128, 0.247));
     backdrop-filter: blur(12px);
   }
 
@@ -27,9 +26,7 @@ const templateStr: string = `
     height: 100%;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: var(--title-height) calc(
-        100% - var(--title-height)
-      );
+    grid-template-rows: var(--title-height) calc(100% - var(--title-height));
   }
 
   .title {
@@ -40,7 +37,6 @@ const templateStr: string = `
         rgba(68, 96, 223, 0.582)
       );
     backdrop-filter: blur(12px);
-    cursor: move;
   }
 
   .content {
@@ -49,6 +45,7 @@ const templateStr: string = `
     padding: 10px;
     user-select: none;
     color: transparent;
+    will-change: transform, top, left;
     background: scroll no-repeat center
       linear-gradient(
         109deg,
@@ -103,6 +100,7 @@ type MOUSE_OPERATION = (ev: MouseEvent) => void;
  * @extends {HTMLElement}
  */
 export class CustomCard extends HTMLElement implements WebComponentBase {
+  private static componentStr: string = templateStr.replaceAll("\n", "").trim();
   /* 组件上的真实 dom 结构引用记录 */
   private container: HTMLElement;
   private titleEl: HTMLElement;
@@ -117,9 +115,10 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   /* 组件创建所消耗的时间(微秒精度) */
   private _createCostTime: number = performance.now();
 
-  private defaultPositionBucket: { left: string; top: string } = {
-    left: "0px",
-    top: "0px",
+  /* 记录自定义卡片的所在位置 */
+  private positionBucket: { left: number; top: number } = {
+    left: 0,
+    top: 0,
   };
 
   /* 用于记录挂载和卸载的数量, 方便进行 debug, 分析记录等 */
@@ -133,8 +132,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
 
   constructor() {
     super();
-    this.attachShadow({ mode: "open" }).innerHTML = templateStr;
-
+    this.attachShadow({ mode: "open" }).innerHTML = CustomCard.componentStr;
     this.titleEl = this.shadowRoot?.querySelector(".title")!;
     this.container = this.shadowRoot?.querySelector(".container")!;
     this.textEditor = this.shadowRoot?.querySelector(".content")!;
@@ -151,22 +149,19 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   }
 
   connectedCallback(): void {
-    this.container.style.left = this.defaultPositionBucket.left;
-    this.container.style.top = this.defaultPositionBucket.top;
+    this.container.style.left = this.positionBucket.left + "px";
+    this.container.style.top = this.positionBucket.top + "px";
     // 通知浏览器将快变化的属性
-    this.container.style.willChange = "left, top";
     this.addEventListener("click", this.setCurrentPriorityDisplay);
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
     this.textEditor.addEventListener("dblclick", this.textEditorInput);
     document.addEventListener("click", this.textEditorBlur);
-
     this._createCostTime = performance.now() - this._createCostTime;
     CustomCard.debugBucket.open &&
       console.log(
         `${this.versionId} connected, record: ${++CustomCard.debugBucket
           .counter}`
       );
-
     this.textEditor.addEventListener(
       "focusout",
       this.contentEditorChangeHandler
@@ -202,10 +197,10 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   ): void {
     switch (name) {
       case "left":
-        this.defaultPositionBucket.left = newValue;
+        this.positionBucket.left = Number.parseInt(newValue);
         break;
       case "top":
-        this.defaultPositionBucket.top = newValue;
+        this.positionBucket.top = Number.parseInt(newValue);
         break;
       default:
         break;
@@ -221,14 +216,9 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     if (this.parentElement?.lastElementChild !== this) {
       this.parentElement?.appendChild(this);
     }
-
     ev.preventDefault();
     ev.stopPropagation();
-
-    if (!this.container.classList.contains("active")) {
-      this.container.classList.add("active");
-    }
-
+    this.container.classList.add("active");
     const substrateX: number = ev.clientX - this.container.offsetLeft;
     const substrateY: number = ev.clientY - this.container.offsetTop;
 
@@ -238,7 +228,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
       let applyLeft: number = mv.clientX - substrateX;
       let applyTop: number = mv.clientY - substrateY;
 
-      /* 简单的边界限制处理 */
+      /* 边界值处理 */
       if (applyLeft <= 0) {
         applyLeft = 0;
       }
@@ -259,19 +249,20 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
         applyTop =
           this.parentElement!.clientHeight - this.container.clientHeight;
       }
-
-      this.container.style.left = `${applyLeft}px`;
-      this.container.style.top = `${applyTop}px`;
-      this.setAttribute("left", `${applyLeft}px`);
-      this.setAttribute("top", `${applyTop}px`);
+      this.container.style.cssText = `left:unset;top:unset;transform:translate3d(${applyLeft}px,${applyTop}px,1px)`;
+      this.positionBucket.left = applyLeft;
+      this.positionBucket.top = applyTop;
     };
 
     document.addEventListener("mousemove", mouseMove);
-
     this.mouseUpHandlerRecord = (): void => {
       if (this.container.classList.contains("active")) {
         this.container.classList.remove("active");
       }
+      this.container.style.cssText = `left:${this.positionBucket.left}px;top:${this.positionBucket.top}px;transform:translate3d(0,0,1px)`;
+      // 更新自定义标签属性, 使之被 MutationObserver 捕获到状态变更
+      this.setAttribute("left", `${this.positionBucket.left}`);
+      this.setAttribute("top", `${this.positionBucket.top}`);
       document.removeEventListener("mousemove", mouseMove);
     };
 
