@@ -117,7 +117,8 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   /* 组件创建所消耗的时间(微秒精度) */
   private _createCostTime: number = performance.now();
 
-  private defaultPositionBucket: { left: number; top: number } = {
+  /* 记录自定义卡片的所在位置 */
+  private positionBucket: { left: number; top: number } = {
     left: 0,
     top: 0,
   };
@@ -151,8 +152,8 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   }
 
   connectedCallback(): void {
-    this.container.style.left = this.defaultPositionBucket.left + "px";
-    this.container.style.top = this.defaultPositionBucket.top + "px";
+    this.container.style.left = this.positionBucket.left + "px";
+    this.container.style.top = this.positionBucket.top + "px";
     // 通知浏览器将快变化的属性
     this.container.style.willChange = "transform, top, left";
     this.addEventListener("click", this.setCurrentPriorityDisplay);
@@ -201,10 +202,10 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   ): void {
     switch (name) {
       case "left":
-        this.defaultPositionBucket.left = Number.parseInt(newValue);
+        this.positionBucket.left = Number.parseInt(newValue);
         break;
       case "top":
-        this.defaultPositionBucket.top = Number.parseInt(newValue);
+        this.positionBucket.top = Number.parseInt(newValue);
         break;
       default:
         break;
@@ -254,8 +255,8 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
           this.parentElement!.clientHeight - this.container.clientHeight;
       }
       this.container.style.cssText = `left:unset;top:unset;transform:translate3d(${applyLeft}px,${applyTop}px,1px)`;
-      this.defaultPositionBucket.left = applyLeft;
-      this.defaultPositionBucket.top = applyTop;
+      this.positionBucket.left = applyLeft;
+      this.positionBucket.top = applyTop;
     };
 
     document.addEventListener("mousemove", mouseMove);
@@ -264,12 +265,12 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
         this.container.classList.remove("active");
       }
       this.container.style.transform = `translate3D(0px, 0px, 1px)`;
-      this.container.style.left = `${this.defaultPositionBucket.left}px`;
-      this.container.style.top = `${this.defaultPositionBucket.top}px`;
+      this.container.style.left = `${this.positionBucket.left}px`;
+      this.container.style.top = `${this.positionBucket.top}px`;
 
       // 更新自定义标签属性, 使之被 MutationObserver 捕获到状态变更
-      this.setAttribute("left", `${this.defaultPositionBucket.left}`);
-      this.setAttribute("top", `${this.defaultPositionBucket.top}`);
+      this.setAttribute("left", `${this.positionBucket.left}`);
+      this.setAttribute("top", `${this.positionBucket.top}`);
       document.removeEventListener("mousemove", mouseMove);
     };
 
