@@ -1,4 +1,4 @@
-type GENERATE_NUMBER_FUNC = () => number;
+type GENERATE_NUMBER_FUNC = (seed?: any) => number;
 
 /**
  * @description 将一个可迭代对象的子项根据特定的时间进行返回
