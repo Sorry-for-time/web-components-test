@@ -5,8 +5,8 @@ import { customMessage, MessageType } from "@/lib/components/CustomMessage";
 import {
   useSwitchTheme,
   useResetToDefaultTheme,
-} from "@/layout-ui-operation/switch-theme";
-import { useTypewriterEffect } from "@/layout-ui-operation/typewriter-effect";
+} from "@/ui-operation/switch-theme";
+import { useTypewriterEffect } from "@/ui-operation/typewriter-effect";
 import { debounce, throttle } from "@/utils/performanceUtil";
 import { worker } from "@/config/createWorkerThread";
 import { databaseUser } from "@/config/databaseUserConfig";
