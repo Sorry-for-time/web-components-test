@@ -17,8 +17,7 @@ const templateStr: string = `
     border-radius: 6px;
     overflow: hidden;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.418);
-    background: scroll no-repeat center
-      linear-gradient(rgba(0, 255, 255, 0.205), rgba(128, 0, 128, 0.247));
+    background: scroll no-repeat center linear-gradient(rgba(0, 255, 255, 0.205), rgba(128, 0, 128, 0.247));
     backdrop-filter: blur(12px);
   }
 
@@ -27,9 +26,7 @@ const templateStr: string = `
     height: 100%;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: var(--title-height) calc(
-        100% - var(--title-height)
-      );
+    grid-template-rows: var(--title-height) calc(100% - var(--title-height));
   }
 
   .title {
@@ -103,6 +100,7 @@ type MOUSE_OPERATION = (ev: MouseEvent) => void;
  * @extends {HTMLElement}
  */
 export class CustomCard extends HTMLElement implements WebComponentBase {
+  private static componentStr: string = templateStr.replaceAll("\n", "").trim();
   /* 组件上的真实 dom 结构引用记录 */
   private container: HTMLElement;
   private titleEl: HTMLElement;
@@ -134,8 +132,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
 
   constructor() {
     super();
-    this.attachShadow({ mode: "open" }).innerHTML = templateStr;
-
+    this.attachShadow({ mode: "open" }).innerHTML = CustomCard.componentStr;
     this.titleEl = this.shadowRoot?.querySelector(".title")!;
     this.container = this.shadowRoot?.querySelector(".container")!;
     this.textEditor = this.shadowRoot?.querySelector(".content")!;
@@ -155,12 +152,10 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     this.container.style.left = this.positionBucket.left + "px";
     this.container.style.top = this.positionBucket.top + "px";
     // 通知浏览器将快变化的属性
-    this.container.style.willChange = "transform, top, left";
     this.addEventListener("click", this.setCurrentPriorityDisplay);
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
     this.textEditor.addEventListener("dblclick", this.textEditorInput);
     document.addEventListener("click", this.textEditorBlur);
-
     this._createCostTime = performance.now() - this._createCostTime;
     CustomCard.debugBucket.open &&
       console.log(
@@ -233,7 +228,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
       let applyLeft: number = mv.clientX - substrateX;
       let applyTop: number = mv.clientY - substrateY;
 
-      /* 简单的边界限制处理 */
+      /* 边界值处理 */
       if (applyLeft <= 0) {
         applyLeft = 0;
       }
@@ -264,10 +259,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
       if (this.container.classList.contains("active")) {
         this.container.classList.remove("active");
       }
-      this.container.style.transform = `translate3D(0px, 0px, 1px)`;
-      this.container.style.left = `${this.positionBucket.left}px`;
-      this.container.style.top = `${this.positionBucket.top}px`;
-
+      this.container.style.cssText = `left:${this.positionBucket.left}px;top:${this.positionBucket.top}px;transform:translate3d(0,0,1px)`;
       // 更新自定义标签属性, 使之被 MutationObserver 捕获到状态变更
       this.setAttribute("left", `${this.positionBucket.left}`);
       this.setAttribute("top", `${this.positionBucket.top}`);
