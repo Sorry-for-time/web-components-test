@@ -81,9 +81,7 @@ const templateStr: string = `
 <div class="container">
   <div class="card">
     <div class="title"></div>
-    <div class="content">
-      <slot></slot>
-    </div>
+    <div class="content"></div>
   </div>
 </div>
 `;
@@ -122,7 +120,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   };
 
   /* 用于记录挂载和卸载的数量, 方便进行 debug, 分析记录等 */
-  public static debugBucket: {
+  public static recordInfo: {
     open: boolean /* 是否打开全局的 log 日志输出 */;
     counter: number /* 所有此类的实例挂载到页面上的数量 */;
   } = {
@@ -136,9 +134,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     this.titleEl = this.shadowRoot?.querySelector(".title")!;
     this.container = this.shadowRoot?.querySelector(".container")!;
     this.textEditor = this.shadowRoot?.querySelector(".content")!;
-
-    /* 在节点加载成功后移除 slot 节点 */
-    this.textEditor.removeChild(this.textEditor.querySelector("slot")!);
+    // 创建内部标签, 元素为自定义卡片内的内容
     this.textEditor.innerHTML = this.innerHTML.toString();
     // 记录创建耗时
     this._createCostTime = performance.now() - this._createCostTime;
@@ -157,9 +153,9 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     this.textEditor.addEventListener("dblclick", this.textEditorInput);
     document.addEventListener("click", this.textEditorBlur);
     this._createCostTime = performance.now() - this._createCostTime;
-    CustomCard.debugBucket.open &&
+    CustomCard.recordInfo.open &&
       console.log(
-        `${this.versionId} connected, record: ${++CustomCard.debugBucket
+        `${this.versionId} connected, record: ${++CustomCard.recordInfo
           .counter}`
       );
     this.textEditor.addEventListener(
@@ -170,10 +166,6 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
 
   disconnectedCallback(): void {
     document.removeEventListener("mousedown", this.mouseDownHandler);
-
-    this.mouseUpHandlerRecord &&
-      document.removeEventListener("mouseup", this.mouseUpHandlerRecord);
-
     /* 移除文本编辑框的内容 */
     this.textEditor.removeEventListener("dblclick", this.textEditorInput);
     document.removeEventListener("click", this.textEditorBlur);
@@ -183,9 +175,9 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
       this.contentEditorChangeHandler
     );
 
-    CustomCard.debugBucket.open &&
+    CustomCard.recordInfo.open &&
       console.log(
-        `${this._versionID} disconnected, record ${CustomCard.debugBucket
+        `${this._versionID} disconnected, record ${CustomCard.recordInfo
           .counter--}`
       );
   }
@@ -249,23 +241,25 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
         applyTop =
           this.parentElement!.clientHeight - this.container.clientHeight;
       }
-      this.container.style.cssText = `left:unset;top:unset;transform:translate3d(${applyLeft}px,${applyTop}px,1px)`;
+      this.container.style.cssText = `left:0;top:0;transform:translate3d(${applyLeft}px,${applyTop}px,1px)`;
       this.positionBucket.left = applyLeft;
       this.positionBucket.top = applyTop;
     };
 
     document.addEventListener("mousemove", mouseMove);
+
+    // 鼠标抬起时的操作
     this.mouseUpHandlerRecord = (): void => {
-      if (this.container.classList.contains("active")) {
-        this.container.classList.remove("active");
-      }
+      this.container.classList.remove("active");
       this.container.style.cssText = `left:${this.positionBucket.left}px;top:${this.positionBucket.top}px;transform:translate3d(0,0,1px)`;
       // 更新自定义标签属性, 使之被 MutationObserver 捕获到状态变更
       this.setAttribute("left", `${this.positionBucket.left}`);
       this.setAttribute("top", `${this.positionBucket.top}`);
+      // 移除监听器
       document.removeEventListener("mousemove", mouseMove);
+      this.mouseUpHandlerRecord &&
+        document.removeEventListener("mouseup", this.mouseUpHandlerRecord);
     };
-
     /* 添加监听器 */
     document.addEventListener("mouseup", this.mouseUpHandlerRecord);
   };
