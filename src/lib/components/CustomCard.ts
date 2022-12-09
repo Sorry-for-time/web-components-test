@@ -40,7 +40,6 @@ const templateStr: string = `
         rgba(68, 96, 223, 0.582)
       );
     backdrop-filter: blur(12px);
-    cursor: move;
   }
 
   .content {
@@ -117,9 +116,9 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   /* 组件创建所消耗的时间(微秒精度) */
   private _createCostTime: number = performance.now();
 
-  private defaultPositionBucket: { left: string; top: string } = {
-    left: "0px",
-    top: "0px",
+  private defaultPositionBucket: { left: number; top: number } = {
+    left: 0,
+    top: 0,
   };
 
   /* 用于记录挂载和卸载的数量, 方便进行 debug, 分析记录等 */
@@ -151,10 +150,10 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   }
 
   connectedCallback(): void {
-    this.container.style.left = this.defaultPositionBucket.left;
-    this.container.style.top = this.defaultPositionBucket.top;
+    this.container.style.left = this.defaultPositionBucket.left + "px";
+    this.container.style.top = this.defaultPositionBucket.top + "px";
     // 通知浏览器将快变化的属性
-    this.container.style.willChange = "left, top";
+    this.container.style.willChange = "transform, top, left";
     this.addEventListener("click", this.setCurrentPriorityDisplay);
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
     this.textEditor.addEventListener("dblclick", this.textEditorInput);
@@ -166,7 +165,6 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
         `${this.versionId} connected, record: ${++CustomCard.debugBucket
           .counter}`
       );
-
     this.textEditor.addEventListener(
       "focusout",
       this.contentEditorChangeHandler
@@ -202,10 +200,10 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   ): void {
     switch (name) {
       case "left":
-        this.defaultPositionBucket.left = newValue;
+        this.defaultPositionBucket.left = Number.parseInt(newValue);
         break;
       case "top":
-        this.defaultPositionBucket.top = newValue;
+        this.defaultPositionBucket.top = Number.parseInt(newValue);
         break;
       default:
         break;
@@ -221,14 +219,9 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     if (this.parentElement?.lastElementChild !== this) {
       this.parentElement?.appendChild(this);
     }
-
     ev.preventDefault();
     ev.stopPropagation();
-
-    if (!this.container.classList.contains("active")) {
-      this.container.classList.add("active");
-    }
-
+    this.container.classList.add("active");
     const substrateX: number = ev.clientX - this.container.offsetLeft;
     const substrateY: number = ev.clientY - this.container.offsetTop;
 
@@ -259,19 +252,23 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
         applyTop =
           this.parentElement!.clientHeight - this.container.clientHeight;
       }
-
-      this.container.style.left = `${applyLeft}px`;
-      this.container.style.top = `${applyTop}px`;
-      this.setAttribute("left", `${applyLeft}px`);
-      this.setAttribute("top", `${applyTop}px`);
+      this.container.style.left = "0px";
+      this.container.style.top = "0px";
+      this.container.style.transform = `translate(${applyLeft}px, ${applyTop}px)`;
+      this.defaultPositionBucket.left = applyLeft;
+      this.defaultPositionBucket.top = applyTop;
     };
 
     document.addEventListener("mousemove", mouseMove);
-
     this.mouseUpHandlerRecord = (): void => {
       if (this.container.classList.contains("active")) {
         this.container.classList.remove("active");
       }
+      this.container.style.transform = "unset";
+      this.container.style.left = `${this.defaultPositionBucket.left}px`;
+      this.container.style.top = `${this.defaultPositionBucket.top}px`;
+      this.setAttribute("left", `${this.defaultPositionBucket.left}`);
+      this.setAttribute("top", `${this.defaultPositionBucket.top}`);
       document.removeEventListener("mousemove", mouseMove);
     };
 
