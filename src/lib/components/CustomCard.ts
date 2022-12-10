@@ -204,7 +204,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
    * @param ev 鼠标主键按下事件
    */
   private mouseDownHandler: MOUSE_OPERATION = (ev: MouseEvent): void => {
-    // 如果已经是优先级别最高的元素, 那么久不重新操作
+    // 如果已经是优先级别最高的元素, 那么不重新操作
     if (this.parentElement?.lastElementChild !== this) {
       this.parentElement?.appendChild(this);
     }
@@ -214,9 +214,13 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     const substrateX: number = ev.clientX - this.container.offsetLeft;
     const substrateY: number = ev.clientY - this.container.offsetTop;
 
+    /**
+     * 鼠标移动时的操作
+     * @param mv 鼠标事件对象属性
+     */
     const mouseMove: MOUSE_OPERATION = (mv: MouseEvent): void => {
-      ev.preventDefault();
-      ev.stopPropagation();
+      mv.preventDefault();
+      mv.stopPropagation();
       let applyLeft: number = mv.clientX - substrateX;
       let applyTop: number = mv.clientY - substrateY;
 
@@ -241,7 +245,9 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
         applyTop =
           this.parentElement!.clientHeight - this.container.clientHeight;
       }
+      // 修改位置
       this.container.style.cssText = `left:0;top:0;transform:translate3d(${applyLeft}px,${applyTop}px,1px)`;
+      // 更新组件实例记录属性
       this.positionBucket.left = applyLeft;
       this.positionBucket.top = applyTop;
     };
@@ -250,7 +256,9 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
 
     // 鼠标抬起时的操作
     this.mouseUpHandlerRecord = (): void => {
+      // 移除样式
       this.container.classList.remove("active");
+      // 回写样式
       this.container.style.cssText = `left:${this.positionBucket.left}px;top:${this.positionBucket.top}px;transform:translate3d(0,0,1px)`;
       // 更新自定义标签属性, 使之被 MutationObserver 捕获到状态变更
       this.setAttribute("left", `${this.positionBucket.left}`);
