@@ -47,13 +47,13 @@
 ## 简单的图片展示说明
 
 - 自定义菜单(在卡片上时)
-  <img src="./.assets/menu2.png" width="60%" />
+  <img src="./.assets/menu2.png" width="100%" />
 - 自定义菜单(在卡片外)
-  <img src="./.assets/menu1.png" width="60%" />
+  <img src="./.assets/menu1.png" width="100%" />
 - 自定义确认框组件效果
-  <img src="./.assets/reset.png" width="60%" />
+  <img src="./.assets/reset.png" width="100%" />
 - 自定义消息组件提示效果
-  <img src="./.assets/custom-message.png" width="60%" />
+  <img src="./.assets/custom-message.png" width="100%" />
 
 ## Notes
 
