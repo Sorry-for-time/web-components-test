@@ -153,9 +153,7 @@ export class ContextMenu extends WebComponentBase {
    * 添加隐藏自定义菜单的样式
    * @param ev 鼠标单击产生的事件
    */
-  private removeHideClass: (ev: MouseEvent) => void = (
-    ev: MouseEvent
-  ): void => {
+  private removeHideClass: (ev: MouseEvent) => void = (ev: MouseEvent): void => {
     ev.preventDefault();
     ev.stopPropagation();
     if (!this.container.classList.contains("hide")) {
@@ -167,9 +165,7 @@ export class ContextMenu extends WebComponentBase {
    * 鼠标单击菜单选项的对应操作
    * @param ev 鼠标单击菜单选项按钮事件
    */
-  private clickMenuItemHandler: (ev: MouseEvent) => void = (
-    ev: MouseEvent
-  ): void => {
+  private clickMenuItemHandler: (ev: MouseEvent) => void = (ev: MouseEvent): void => {
     ev.preventDefault();
     ev.stopPropagation();
     /* 取得点击的目标元素 */
@@ -199,23 +195,17 @@ export class ContextMenu extends WebComponentBase {
         break;
       // 编辑当前卡片
       case MenuItemType.EDITOR:
-        const editor: HTMLDivElement =
-          this.cardTarget?.shadowRoot?.querySelector(".content")!;
+        const editor: HTMLDivElement = this.cardTarget?.shadowRoot?.querySelector(".content")!;
         editor.setAttribute("contenteditable", "true");
         editor.focus(); // 聚焦光标
         document.execCommand("selectAll", true); // 在获取光标后勾选所有的文本内容
         break;
       // 导出卡片内容
       case MenuItemType.EXPORT:
-        const container: HTMLDivElement =
-          this.cardTarget?.shadowRoot?.querySelector(".container")!;
+        const container: HTMLDivElement = this.cardTarget?.shadowRoot?.querySelector(".container")!;
         let anchor: HTMLAnchorElement | null = document.createElement("a");
-        const text: string =
-          container.querySelector(".content")?.textContent || ""; // 获取文本内容
-        anchor.setAttribute(
-          "href",
-          "data:text/plain;charset=utf-8," + encodeURIComponent(text.trim())
-        ); // 设置锚点链接
+        const text: string = container.querySelector(".content")?.textContent || ""; // 获取文本内容
+        anchor.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text.trim())); // 设置锚点链接
         anchor.setAttribute("download", "context.txt"); // 设置下载链接
         anchor.click(); // 触发点击, 进行导出操作
         anchor = null; //  置空元素
@@ -247,9 +237,7 @@ export class ContextMenu extends WebComponentBase {
    * 鼠标右键事件处理
    * @param ev 鼠标点击右键触发的事件信息
    */
-  private contextMenuHandler: (ev: MouseEvent) => void = (
-    ev: MouseEvent
-  ): void => {
+  private contextMenuHandler: (ev: MouseEvent) => void = (ev: MouseEvent): void => {
     ev.preventDefault();
     ev.stopPropagation();
 
@@ -266,11 +254,7 @@ export class ContextMenu extends WebComponentBase {
     if (isCustomCardInstance) {
       this.allItems.forEach((p: HTMLParagraphElement): void => {
         // 目标为卡片实例时不显示 "添加", "打印", "删除所有节点" 选项
-        if (
-          p.id !== MenuItemType.ADD &&
-          p.id !== MenuItemType.PRINT &&
-          p.id !== MenuItemType.REMOVE_ALL
-        ) {
+        if (p.id !== MenuItemType.ADD && p.id !== MenuItemType.PRINT && p.id !== MenuItemType.REMOVE_ALL) {
           p.classList.remove("hide");
         }
       });
@@ -279,11 +263,7 @@ export class ContextMenu extends WebComponentBase {
     else {
       // 目标不为卡片实例时显示 "添加", "打印" 和 "删除所有卡片" 选项
       this.allItems.forEach((p: HTMLParagraphElement): void => {
-        if (
-          p.id === MenuItemType.ADD ||
-          p.id === MenuItemType.PRINT ||
-          p.id === MenuItemType.REMOVE_ALL
-        ) {
+        if (p.id === MenuItemType.ADD || p.id === MenuItemType.PRINT || p.id === MenuItemType.REMOVE_ALL) {
           p.removeAttribute("class");
         }
       });

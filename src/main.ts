@@ -2,10 +2,7 @@ import "@/scss/base.scss";
 import "@/config/registerComponent";
 import { customConfirm } from "@/lib/components/CustomConfirm";
 import { customMessage, MessageType } from "@/lib/components/CustomMessage";
-import {
-  useSwitchTheme,
-  useResetToDefaultTheme,
-} from "@/ui-operation/switch-theme";
+import { useSwitchTheme, useResetToDefaultTheme } from "@/ui-operation/switch-theme";
 import { useTypewriterEffect } from "@/ui-operation/typewriter-effect";
 import { debounce, throttle } from "@/utils/performanceUtil";
 import { worker } from "@/config/createWorkerThread";
@@ -78,15 +75,10 @@ window.addEventListener("load", (): void => {
     idbRequest.onsuccess = (): void => {
       database = idbRequest.result;
       // 创建一个只读事务源
-      const transaction: IDBTransaction = database.transaction(
-        databaseUser.storeObjectName,
-        "readonly"
-      );
+      const transaction: IDBTransaction = database.transaction(databaseUser.storeObjectName, "readonly");
 
       // 获取数据对象实例
-      const objectStore: IDBObjectStore = transaction.objectStore(
-        databaseUser.storeObjectName
-      );
+      const objectStore: IDBObjectStore = transaction.objectStore(databaseUser.storeObjectName);
 
       // 进行读取数据操作
       const req: IDBRequest<any> = objectStore.get(databaseUser.storeObjectId);
@@ -113,8 +105,7 @@ window.addEventListener("load", (): void => {
   useDatabaseOperation();
 
   // 点击按钮重置主题
-  const resetThemeButton: HTMLButtonElement =
-    document.querySelector("#reset-theme")!;
+  const resetThemeButton: HTMLButtonElement = document.querySelector("#reset-theme")!;
   resetThemeButton.addEventListener("click", (): void => {
     customConfirm
       .confirm("您确定恢复系统默认主题吗?")
@@ -127,8 +118,7 @@ window.addEventListener("load", (): void => {
       });
   });
 
-  const resetLayoutButton: HTMLButtonElement =
-    document.querySelector("#reset-layout")!;
+  const resetLayoutButton: HTMLButtonElement = document.querySelector("#reset-layout")!;
   // 点击恢复默认布局
   resetLayoutButton.addEventListener("click", (): void => {
     customConfirm
@@ -145,17 +135,14 @@ window.addEventListener("load", (): void => {
       });
   });
 
-  const messageBtn: HTMLButtonElement =
-    document.querySelector("#send-message")!;
+  const messageBtn: HTMLButtonElement = document.querySelector("#send-message")!;
   messageBtn.addEventListener(
     "click",
     throttle(
       (): void => {
         customMessage.message(
           crypto.randomUUID().substring(12),
-          ["info", "success", "warning", "danger"][
-            Math.floor(Math.random() * 4)
-          ] as MessageType
+          ["info", "success", "warning", "danger"][Math.floor(Math.random() * 4)] as MessageType
         );
       },
       true,

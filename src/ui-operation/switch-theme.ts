@@ -17,8 +17,7 @@ const enum THEMES {
  */
 export function useSwitchTheme(): void {
   /* 取得所有的主题颜色切换按钮 */
-  const themeButtons: NodeListOf<HTMLSpanElement> =
-    document.querySelectorAll("#app span");
+  const themeButtons: NodeListOf<HTMLSpanElement> = document.querySelectorAll("#app span");
 
   const storedThemeMode: string | null = localStorage.getItem("theme-mode");
 
@@ -56,9 +55,7 @@ export function useSwitchTheme(): void {
   // 如果本地未指定使用的主题模式, 那么判断系统所处的颜色模式
   else {
     /* 判断当前系统默认颜色是否处于暗色模式 */
-    const colorMode: boolean = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
+    const colorMode: boolean = window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (colorMode) {
       document.body.classList.add(THEMES.dark);
       themeButtons.forEach((e: HTMLSpanElement): void => {
@@ -88,9 +85,7 @@ export function useSwitchTheme(): void {
       });
 
       /* 清空所有主题 */
-      document.body.classList.remove(
-        ...document.body.classList.toString().split(" ")
-      );
+      document.body.classList.remove(...document.body.classList.toString().split(" "));
       let spanThemeStr: string = THEMES.normal;
       switch (span.id) {
         case THEMES.normal:

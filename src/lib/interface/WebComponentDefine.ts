@@ -22,9 +22,5 @@ export interface WebComponentDefine {
    * @param _oldValue 旧值
    * @param newValue 新值
    */
-  attributeChangedCallback?(
-    name?: string,
-    _oldValue?: string,
-    newValue?: string
-  ): void;
+  attributeChangedCallback?(name?: string, _oldValue?: string, newValue?: string): void;
 }

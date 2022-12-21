@@ -1,9 +1,6 @@
 import { WebComponentDefine } from "@/lib/interface/WebComponentDefine";
 
-export abstract class WebComponentBase
-  extends HTMLElement
-  implements WebComponentDefine
-{
+export abstract class WebComponentBase extends HTMLElement implements WebComponentDefine {
   /**
    * 组件挂载到真实页面上时触发的回调
    */
@@ -20,11 +17,7 @@ export abstract class WebComponentBase
    * @param oldValue 旧值
    * @param newValue 新值
    */
-  attributeChangedCallback?(
-    name?: string,
-    oldValue?: string,
-    newValue?: string
-  ): void {
+  attributeChangedCallback?(name?: string, oldValue?: string, newValue?: string): void {
     console.log(name, oldValue, newValue);
   }
 }

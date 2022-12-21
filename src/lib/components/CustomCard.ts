@@ -153,40 +153,27 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     this.textEditor.addEventListener("dblclick", this.textEditorInput);
     document.addEventListener("click", this.textEditorBlur);
     this._createCostTime = performance.now() - this._createCostTime;
-    CustomCard.recordInfo.open &&
-      console.log(
-        `${this.versionId} connected, record: ${++CustomCard.recordInfo
-          .counter}`
-      );
-    this.textEditor.addEventListener(
-      "focusout",
-      this.contentEditorChangeHandler
-    );
+    CustomCard.debugBucket.open &&
+      console.log(`${this.versionId} connected, record: ${++CustomCard.debugBucket.counter}`);
+    this.textEditor.addEventListener("focusout", this.contentEditorChangeHandler);
   }
 
   disconnectedCallback(): void {
     document.removeEventListener("mousedown", this.mouseDownHandler);
+
+    this.mouseUpHandlerRecord && document.removeEventListener("mouseup", this.mouseUpHandlerRecord);
+
     /* 移除文本编辑框的内容 */
     this.textEditor.removeEventListener("dblclick", this.textEditorInput);
     document.removeEventListener("click", this.textEditorBlur);
     this.removeEventListener("click", this.setCurrentPriorityDisplay);
-    this.textEditor.removeEventListener(
-      "focusout",
-      this.contentEditorChangeHandler
-    );
+    this.textEditor.removeEventListener("focusout", this.contentEditorChangeHandler);
 
-    CustomCard.recordInfo.open &&
-      console.log(
-        `${this._versionID} disconnected, record ${CustomCard.recordInfo
-          .counter--}`
-      );
+    CustomCard.debugBucket.open &&
+      console.log(`${this._versionID} disconnected, record ${CustomCard.debugBucket.counter--}`);
   }
 
-  attributeChangedCallback(
-    name: string,
-    _oldValue: string,
-    newValue: string
-  ): void {
+  attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
     switch (name) {
       case "left":
         this.positionBucket.left = Number.parseInt(newValue);
@@ -231,19 +218,11 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
       if (applyTop <= 0) {
         applyTop = 0;
       }
-      if (
-        applyLeft >=
-        this.parentElement!.clientWidth - this.container.clientWidth
-      ) {
-        applyLeft =
-          this.parentElement!.clientWidth - this.container.clientWidth;
+      if (applyLeft >= this.parentElement!.clientWidth - this.container.clientWidth) {
+        applyLeft = this.parentElement!.clientWidth - this.container.clientWidth;
       }
-      if (
-        applyTop >=
-        this.parentElement!.clientHeight - this.container.clientHeight
-      ) {
-        applyTop =
-          this.parentElement!.clientHeight - this.container.clientHeight;
+      if (applyTop >= this.parentElement!.clientHeight - this.container.clientHeight) {
+        applyTop = this.parentElement!.clientHeight - this.container.clientHeight;
       }
       // 修改位置
       this.container.style.cssText = `left:0;top:0;transform:translate3d(${applyLeft}px,${applyTop}px,1px)`;
@@ -291,10 +270,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     ev.preventDefault();
     ev.stopPropagation();
     // 判断目标决定是否移除光标
-    if (
-      (ev.target as CustomCard).shadowRoot?.querySelector(".content") !==
-      this.textEditor
-    ) {
+    if ((ev.target as CustomCard).shadowRoot?.querySelector(".content") !== this.textEditor) {
       this.textEditor.blur();
       this.textEditor.removeAttribute("contenteditable");
     }
@@ -306,9 +282,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
    * @type {MOUSE_OPERATION}
    * @memberof CustomCard
    */
-  private setCurrentPriorityDisplay: MOUSE_OPERATION = (
-    ev: MouseEvent
-  ): void => {
+  private setCurrentPriorityDisplay: MOUSE_OPERATION = (ev: MouseEvent): void => {
     ev.preventDefault();
     ev.stopPropagation();
     /* 将点击选中的元素移动到父容器的末尾, 实现显示层级上的的优先显示 */
@@ -340,9 +314,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   /**
    * 在文本编辑框失去焦点时同步修改元素自身的 innerHTML
    */
-  private contentEditorChangeHandler: (ev: Event) => void = (
-    ev: Event
-  ): void => {
+  private contentEditorChangeHandler: (ev: Event) => void = (ev: Event): void => {
     ev.preventDefault();
     ev.stopPropagation();
     this.innerHTML = this.textEditor.innerHTML!;

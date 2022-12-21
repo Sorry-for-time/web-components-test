@@ -1,7 +1,5 @@
 # PROJECT: web-components-test
 
-> 实验小组 (**SIX WALNUTS**): **六个核桃**
-
 ## Features 🎉
 
 - 基于原生 `WebComponent` 实现可拖拽编辑自定义卡片组件
@@ -48,18 +46,14 @@
 
 ## 简单的图片展示说明
 
-- 为了限制文件大小, 帧率压得很低(所以看起来会很卡, 但实际并不会, 即使没用 transform)
-  <img src="./.assets/display.gif" width="90%" />
-- 节点稍微较多的情况下
-  <img src="./.assets/extreme.png" width="90%" />
 - 自定义菜单(在卡片上时)
-  <img src="./.assets/menu2.png" width="60%" />
+  <img src="./.assets/menu2.png" width="100%" />
 - 自定义菜单(在卡片外)
-  <img src="./.assets/menu1.png" width="60%" />
+  <img src="./.assets/menu1.png" width="100%" />
 - 自定义确认框组件效果
-  <img src="./.assets/reset.png" width="60%" />
+  <img src="./.assets/reset.png" width="100%" />
 - 自定义消息组件提示效果
-  <img src="./.assets/custom-message.png" width="60%" />
+  <img src="./.assets/custom-message.png" width="100%" />
 
 ## Notes
 

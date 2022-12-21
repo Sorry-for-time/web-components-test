@@ -120,32 +120,29 @@ export class CustomConfirm extends WebComponentBase {
     const _that: this = this;
 
     return new Promise((resolve, reject): void => {
-      _that.container?.addEventListener(
-        "click",
-        function clickHandler(ev: MouseEvent): void {
-          // 移除监听器
-          _that.container?.removeEventListener("click", clickHandler);
+      _that.container?.addEventListener("click", function clickHandler(ev: MouseEvent): void {
+        // 移除监听器
+        _that.container?.removeEventListener("click", clickHandler);
 
-          let value: boolean = false;
-          switch (ev.target) {
-            case _that.confirmButton:
-              value = true;
-              break;
-            case _that.cancelButton:
-            default:
-              value = false;
-              break;
-          }
-
-          _that.container?.classList.add("hide"); // 恢复隐藏样式
-          // 处理值
-          if (value) {
-            resolve(value);
-          } else {
-            reject(value);
-          }
+        let value: boolean = false;
+        switch (ev.target) {
+          case _that.confirmButton:
+            value = true;
+            break;
+          case _that.cancelButton:
+          default:
+            value = false;
+            break;
         }
-      );
+
+        _that.container?.classList.add("hide"); // 恢复隐藏样式
+        // 处理值
+        if (value) {
+          resolve(value);
+        } else {
+          reject(value);
+        }
+      });
     });
   }
 }

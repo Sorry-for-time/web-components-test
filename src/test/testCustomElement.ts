@@ -3,9 +3,7 @@ import { iterableConstructorBackItemByDelay } from "@/utils/iterableObjDelayBack
 
 export async function testCustomElement() {
   const dragView: HTMLDivElement = document.querySelector(".drag-view")!;
-  const customCards: Array<CustomCard> = Array.from(
-    document.querySelectorAll("custom-card")
-  );
+  const customCards: Array<CustomCard> = Array.from(document.querySelectorAll("custom-card"));
 
   customCards.forEach((e) => {
     console.log("创建耗时: ", e.createCostTime);
@@ -14,10 +12,7 @@ export async function testCustomElement() {
     dragView.removeChild(v as HTMLElement);
   }
 
-  for await (const v of iterableConstructorBackItemByDelay(
-    customCards,
-    (): number => Math.random() * 1000
-  )) {
+  for await (const v of iterableConstructorBackItemByDelay(customCards, (): number => Math.random() * 1000)) {
     dragView.appendChild(v as HTMLElement);
   }
 }
