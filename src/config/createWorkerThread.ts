@@ -1,12 +1,7 @@
 import { workerScriptBody } from "@/worker-script/indexedDB-store-worker";
-const workerScriptRaw: string = workerScriptBody
-  .toString()
-  .replace("function workerScriptBody() {", "");
+const workerScriptRaw: string = workerScriptBody.toString().replace("function workerScriptBody() {", "");
 // worker 脚本字符串
-const workerScript: string = workerScriptRaw
-  .substring(0, workerScriptRaw.lastIndexOf("}"))
-  .replaceAll("\n", "")
-  .trim();
+const workerScript: string = workerScriptRaw.substring(0, workerScriptRaw.lastIndexOf("}")).replaceAll("\n", "").trim();
 
 // 创建线程
 export const worker = new Worker(URL.createObjectURL(new Blob([workerScript])));

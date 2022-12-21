@@ -228,12 +228,7 @@ body {
     h1,
     span {
       color: transparent;
-      background: scroll no-repeat center
-        linear-gradient(
-          109.6deg,
-          hsl(155, 90%, 60%) 11.2%,
-          hsl(212, 92%, 46%) 91.1%
-        );
+      background: scroll no-repeat center linear-gradient(109.6deg, hsl(155, 90%, 60%) 11.2%, hsl(212, 92%, 46%) 91.1%);
       font-size: 18px;
       background-clip: text;
       -webkit-background-clip: text;
