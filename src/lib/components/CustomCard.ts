@@ -30,6 +30,9 @@ const templateStr: string = `
   }
 
   .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: scroll no-repeat center
       linear-gradient(
         23deg,
@@ -37,6 +40,15 @@ const templateStr: string = `
         rgba(68, 96, 223, 0.582)
       );
     backdrop-filter: blur(12px);
+  }
+
+  .title .drag-hint {
+    box-sizing: border-box;
+    width: 40%;
+    height: 8px;
+    background: hsl(212deg 65% 25% / 47%);
+    border-radius: 4px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2) inset;
   }
 
   .content {
@@ -80,8 +92,12 @@ const templateStr: string = `
 
 <div class="container">
   <div class="card">
-    <div class="title"></div>
-    <div class="content"></div>
+    <div class="title">
+      <span class="drag-hint"><span>
+    </div>
+    <div class="content">
+      <slot></slot>
+    </div>
   </div>
 </div>
 `;
@@ -135,7 +151,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
    */
   private positionBucket: { left: number; top: number } = {
     left: 0,
-    top: 0,
+    top: 0
   };
 
   /**
@@ -146,7 +162,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     counter: number /* 所有此类的实例挂载到页面上的数量 */;
   } = {
     open: false,
-    counter: 0,
+    counter: 0
   };
 
   constructor() {
