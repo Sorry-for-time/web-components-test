@@ -1,0 +1,81 @@
+<template id="custom-confirm">
+  <style>
+    .__container {
+      z-index: 333;
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background-color: hsla(0, 0%, 0%, 0.726);
+      transition: all ease-out 200ms;
+    }
+
+    .__container.hide {
+      opacity: 0;
+      z-index: -23;
+      visibility: none;
+    }
+
+    .confirm {
+      user-select: none;
+      min-width: 300px;
+      min-height: 200px;
+      max-width: 500px;
+      max-height: 300px;
+
+      margin: 160px auto auto auto;
+      width: 40%;
+      height: 30%;
+      background: scroll center no-repeat linear-gradient(23deg, hsla(210, 100%, 60%, 0.181), rgba(128, 0, 128, 0.133));
+      backdrop-filter: blur(12px) brightness(1.2);
+      border-radius: 10px;
+      box-shadow: 0 6px 10px hsla(0, 0%, 0%, 0.473);
+      color: white;
+      text-shadow: 0 0 2px hsla(0, 0%, 0%, 0.623);
+
+      display: grid;
+      grid-template-rows: 140px calc(100% - 140px);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .confirm h1 {
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .confirm div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      column-gap: 20px;
+    }
+
+    .confirm div button {
+      outline: none;
+      border: none;
+      width: 80px;
+      height: 40px;
+      border-radius: 8px;
+      box-shadow: 0 0 3px black;
+      cursor: pointer;
+      transition: all 100ms ease-out;
+    }
+
+    .confirm div button:active {
+      box-shadow: 0 0 10px white;
+      outline: 1px solid wheat;
+    }
+  </style>
+
+  <div class="__container hide">
+    <div class="confirm">
+      <h1>您确定关闭?</h1>
+      <div>
+        <button id="confirm">确认</button>
+        <button id="cancel">取消</button>
+      </div>
+    </div>
+  </div>
+</template>

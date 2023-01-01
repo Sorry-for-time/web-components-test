@@ -88,8 +88,11 @@ const templateStr: string = `
 
 export class CustomConfirm extends WebComponentBase {
   private container: HTMLDivElement | null = null;
+
   private confirmButton: HTMLButtonElement | null;
+
   private cancelButton: HTMLButtonElement | null;
+
   private titleEl: HTMLParagraphElement | null = null;
 
   static {
@@ -107,12 +110,7 @@ export class CustomConfirm extends WebComponentBase {
   }
 
   /**
-   * @description 确认框
-   * @author Shalling <3330689546@qq.com>
-   * @date 2022-12-05 23:12:57
-   * @param {string} [title="您确定关闭吗?"] 弹窗标题
-   * @returns {*}  {Promise<boolean>}
-   * @memberof CustomConfirm
+   * 自定义弹窗确认框
    */
   public async confirm(title: string = "您确定关闭吗?"): Promise<boolean> {
     this.titleEl && (this.titleEl.textContent = title); /* 设置标题 */

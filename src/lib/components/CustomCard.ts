@@ -92,35 +92,56 @@ const templateStr: string = `
 type MOUSE_OPERATION = (ev: MouseEvent) => void;
 
 /**
- * @description 自定义卡片组件
- * @export
- * @class CustomCard
- * @extends {HTMLElement}
+ * 自定义卡片组件
  */
 export class CustomCard extends HTMLElement implements WebComponentBase {
+  /**
+   * 自定义组件模板字符串
+   */
   private static componentStr: string = templateStr.replaceAll("\n", "").trim();
-  /* 组件上的真实 dom 结构引用记录 */
+
+  /**
+   * 自定义 web 组件容器
+   */
   private container: HTMLElement;
+
+  /**
+   * 卡片进行拖标签标题
+   */
   private titleEl: HTMLElement;
+
+  /**
+   * 文本编辑区域
+   */
   private textEditor: HTMLElement;
 
-  /* 监听器函数引用记录 */
-  private mouseUpHandlerRecord: MOUSE_OPERATION | null = null;
+  /**
+   * 鼠标抬起监听函数引用
+   */
+  private mouseUpHandlerLink: MOUSE_OPERATION | null = null;
 
-  /* 每个实例自身的唯一标识符 */
-  private readonly _versionID: string = crypto.randomUUID().substring(0, 16);
+  /**
+   * 每个实例自身的唯一标识符
+   */
+  private readonly _instanceId: string = crypto.randomUUID().substring(0, 16);
 
-  /* 组件创建所消耗的时间(微秒精度) */
+  /**
+   * 组件创建所消耗的时间
+   */
   private _createCostTime: number = performance.now();
 
-  /* 记录自定义卡片的所在位置 */
+  /**
+   * 记录自定义卡片的所在位置(用于重渲染时恢复位置)
+   */
   private positionBucket: { left: number; top: number } = {
     left: 0,
     top: 0,
   };
 
-  /* 用于记录挂载和卸载的数量, 方便进行 debug, 分析记录等 */
-  public static recordInfo: {
+  /**
+   * 记录组件的基本创建耗时
+   */
+  public static logRecord: {
     open: boolean /* 是否打开全局的 log 日志输出 */;
     counter: number /* 所有此类的实例挂载到页面上的数量 */;
   } = {
@@ -136,6 +157,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     this.textEditor = this.shadowRoot?.querySelector(".content")!;
     // 创建内部标签, 元素为自定义卡片内的内容
     this.textEditor.innerHTML = this.innerHTML.toString();
+
     // 记录创建耗时
     this._createCostTime = performance.now() - this._createCostTime;
   }
@@ -151,26 +173,22 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     this.addEventListener("click", this.setCurrentPriorityDisplay);
     this.titleEl.addEventListener("mousedown", this.mouseDownHandler);
     this.textEditor.addEventListener("dblclick", this.textEditorInput);
-    document.addEventListener("click", this.textEditorBlur);
     this._createCostTime = performance.now() - this._createCostTime;
-    CustomCard.debugBucket.open &&
-      console.log(`${this.versionId} connected, record: ${++CustomCard.debugBucket.counter}`);
+    CustomCard.logRecord.open && console.log(`${this.instanceId} connected, record: ${++CustomCard.logRecord.counter}`);
     this.textEditor.addEventListener("focusout", this.contentEditorChangeHandler);
+    this.textEditor.addEventListener("blur", this.textEditorBlurAction);
   }
 
   disconnectedCallback(): void {
     document.removeEventListener("mousedown", this.mouseDownHandler);
-
-    this.mouseUpHandlerRecord && document.removeEventListener("mouseup", this.mouseUpHandlerRecord);
-
-    /* 移除文本编辑框的内容 */
+    this.mouseUpHandlerLink && document.removeEventListener("mouseup", this.mouseUpHandlerLink);
     this.textEditor.removeEventListener("dblclick", this.textEditorInput);
-    document.removeEventListener("click", this.textEditorBlur);
+    this.textEditor.removeEventListener("blur", this.textEditorBlurAction);
     this.removeEventListener("click", this.setCurrentPriorityDisplay);
     this.textEditor.removeEventListener("focusout", this.contentEditorChangeHandler);
 
-    CustomCard.debugBucket.open &&
-      console.log(`${this._versionID} disconnected, record ${CustomCard.debugBucket.counter--}`);
+    CustomCard.logRecord.open &&
+      console.log(`${this._instanceId} disconnected, record ${CustomCard.logRecord.counter--}`);
   }
 
   attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
@@ -191,69 +209,59 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
    * @param ev 鼠标主键按下事件
    */
   private mouseDownHandler: MOUSE_OPERATION = (ev: MouseEvent): void => {
-    // 如果已经是优先级别最高的元素, 那么不重新操作
+    // 设置卡片选中置顶显示
     if (this.parentElement?.lastElementChild !== this) {
       this.parentElement?.appendChild(this);
     }
     ev.preventDefault();
     ev.stopPropagation();
     this.container.classList.add("active");
+
     const substrateX: number = ev.clientX - this.container.offsetLeft;
     const substrateY: number = ev.clientY - this.container.offsetTop;
 
-    /**
-     * 鼠标移动时的操作
-     * @param mv 鼠标事件对象属性
-     */
-    const mouseMove: MOUSE_OPERATION = (mv: MouseEvent): void => {
-      mv.preventDefault();
-      mv.stopPropagation();
-      let applyLeft: number = mv.clientX - substrateX;
-      let applyTop: number = mv.clientY - substrateY;
+    const mouseMoveAction: MOUSE_OPERATION = (mv: MouseEvent): void => {
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      let willApplyLeft: number = mv.clientX - substrateX;
+      let willApplyTop: number = mv.clientY - substrateY;
 
       /* 边界值处理 */
-      if (applyLeft <= 0) {
-        applyLeft = 0;
+      if (willApplyLeft <= 0) {
+        willApplyLeft = 0;
       }
-      if (applyTop <= 0) {
-        applyTop = 0;
+      if (willApplyTop <= 0) {
+        willApplyTop = 0;
       }
-      if (applyLeft >= this.parentElement!.clientWidth - this.container.clientWidth) {
-        applyLeft = this.parentElement!.clientWidth - this.container.clientWidth;
+      if (willApplyLeft >= this.parentElement!.clientWidth - this.container.clientWidth) {
+        willApplyLeft = this.parentElement!.clientWidth - this.container.clientWidth;
       }
-      if (applyTop >= this.parentElement!.clientHeight - this.container.clientHeight) {
-        applyTop = this.parentElement!.clientHeight - this.container.clientHeight;
+      if (willApplyTop >= this.parentElement!.clientHeight - this.container.clientHeight) {
+        willApplyTop = this.parentElement!.clientHeight - this.container.clientHeight;
       }
-      // 修改位置
-      this.container.style.cssText = `left:0;top:0;transform:translate3d(${applyLeft}px,${applyTop}px,1px)`;
-      // 更新组件实例记录属性
-      this.positionBucket.left = applyLeft;
-      this.positionBucket.top = applyTop;
+      this.container.style.cssText = `left:unset;top:unset;transform:translate3d(${willApplyLeft}px,${willApplyTop}px,1px)`;
+      this.positionBucket.left = willApplyLeft;
+      this.positionBucket.top = willApplyTop;
     };
 
-    document.addEventListener("mousemove", mouseMove);
+    document.addEventListener("mousemove", mouseMoveAction);
 
-    // 鼠标抬起时的操作
-    this.mouseUpHandlerRecord = (): void => {
-      // 移除样式
+    this.mouseUpHandlerLink = (): void => {
       this.container.classList.remove("active");
-      // 回写样式
-      this.container.style.cssText = `left:${this.positionBucket.left}px;top:${this.positionBucket.top}px;transform:translate3d(0,0,1px)`;
+      this.container.style.cssText = `left:${this.positionBucket.left}px;top:${this.positionBucket.top}px;transform:translate3d(0, 0, 1px)`;
       // 更新自定义标签属性, 使之被 MutationObserver 捕获到状态变更
       this.setAttribute("left", `${this.positionBucket.left}`);
       this.setAttribute("top", `${this.positionBucket.top}`);
-      // 移除监听器
-      document.removeEventListener("mousemove", mouseMove);
-      this.mouseUpHandlerRecord &&
-        document.removeEventListener("mouseup", this.mouseUpHandlerRecord);
+      // 在抬起鼠标后清除监听器(收尾)
+      document.removeEventListener("mousemove", mouseMoveAction);
     };
-    /* 添加监听器 */
-    document.addEventListener("mouseup", this.mouseUpHandlerRecord);
+    // 添加监听器
+    document.addEventListener("mouseup", this.mouseUpHandlerLink);
   };
 
   /**
-   * 卡片文本框失去焦点
-   * @param ev
+   * 卡片编辑区域双击时设置可编辑状态
    */
   private textEditorInput: MOUSE_OPERATION = (ev: MouseEvent): void => {
     ev.preventDefault();
@@ -263,49 +271,33 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   };
 
   /**
-   * 卡片文本框聚焦功能实现
-   * @param ev
-   */
-  private textEditorBlur: MOUSE_OPERATION = (ev: MouseEvent): void => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    // 判断目标决定是否移除光标
-    if ((ev.target as CustomCard).shadowRoot?.querySelector(".content") !== this.textEditor) {
-      this.textEditor.blur();
-      this.textEditor.removeAttribute("contenteditable");
-    }
-  };
-
-  /**
-   * @description 设置当前元素的显示的优先级为最高
-   * @private
-   * @type {MOUSE_OPERATION}
-   * @memberof CustomCard
+   * 设置当前元素的显示的优先级为最高
    */
   private setCurrentPriorityDisplay: MOUSE_OPERATION = (ev: MouseEvent): void => {
     ev.preventDefault();
     ev.stopPropagation();
-    /* 将点击选中的元素移动到父容器的末尾, 实现显示层级上的的优先显示 */
+    // 将点击选中的元素移动到父容器的末尾, 实现显示层级上的的优先显示
     if (this.parentElement?.lastElementChild !== this) {
       this.parentElement?.appendChild(this);
     }
   };
 
   /**
-   * @description 实例组件的唯一标识码
-   * @readonly
-   * @type {string}
-   * @memberof CustomCard
+   * 卡片内部编辑失去焦点的时候移除 contenteditable 属性
    */
-  public get versionId(): string {
-    return this._versionID;
+  private textEditorBlurAction: () => void = (): void => {
+    this.textEditor.removeAttribute("contenteditable");
+  };
+
+  /**
+   * 实例组件的唯一标识码
+   */
+  public get instanceId(): string {
+    return this._instanceId;
   }
 
   /**
-   * @description 组件创建的时间
-   * @readonly
-   * @type {number}
-   * @memberof CustomCard
+   * 组件创建的时间
    */
   public get createCostTime(): number {
     return this._createCostTime;
@@ -317,6 +309,6 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   private contentEditorChangeHandler: (ev: Event) => void = (ev: Event): void => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.innerHTML = this.textEditor.innerHTML!;
+    this.innerHTML = this.textEditor.innerHTML || "";
   };
 }

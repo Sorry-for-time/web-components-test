@@ -1,0 +1,79 @@
+<template id="custom-card">
+  <style>
+    .active {
+      cursor: move;
+    }
+
+    .container {
+      --title-height: 26px;
+      position: absolute;
+
+      display: block;
+      width: 260px;
+      max-height: 500px;
+      overflow: auto;
+      height: auto;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.418);
+      background: scroll no-repeat center linear-gradient(rgba(0, 255, 255, 0.205), rgba(128, 0, 128, 0.247));
+      backdrop-filter: blur(12px);
+    }
+
+    .container .card {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: var(--title-height) calc(100% - var(--title-height));
+    }
+
+    .title {
+      background: scroll no-repeat center linear-gradient(23deg, rgba(194, 115, 197, 0.589), rgba(68, 96, 223, 0.582));
+      backdrop-filter: blur(12px);
+    }
+
+    .content {
+      min-height: 24px;
+      font-size: 18px;
+      padding: 10px;
+      user-select: none;
+      color: transparent;
+      will-change: transform, top, left;
+      background: scroll no-repeat center
+        linear-gradient(109deg, rgba(61, 245, 167, 1) 11.2%, rgba(9, 111, 224, 1) 91.1%);
+      font-weight: 600;
+      background-clip: text;
+      -webkit-background-clip: text;
+      animation: scroll-color 5s linear infinite;
+    }
+
+    .content:focus-within {
+      caret-color: white;
+      outline: none;
+      background: rgba(39, 39, 39, 0.616);
+      color: rgb(230, 230, 230);
+      animation: none;
+      background-clip: none;
+      -webkit-background-clip: none;
+    }
+
+    @keyframes scroll-color {
+      from {
+        filter: hue-rotate(0deg);
+      }
+      to {
+        filter: hue-rotate(360deg);
+      }
+    }
+  </style>
+
+  <div class="container">
+    <div class="card">
+      <div class="title"></div>
+      <div class="content">
+        <slot></slot>
+      </div>
+    </div>
+  </div>
+</template>

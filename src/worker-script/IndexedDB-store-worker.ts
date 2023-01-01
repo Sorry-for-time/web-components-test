@@ -2,11 +2,23 @@
  * worker 线程的函数包裹体
  */
 export function workerScriptBody(): void {
-  const user = {
-    databaseName: "data-view" /* 数据库名称 */,
-    databaseVersion: 1 /* 数据库版本号 */,
-    storeObjectName: "data-store" /* 实例对象名称 */,
-    storeObjectId: "data-view-key" /* 唯一 key */,
+  const databaseUser = {
+    /**
+     * 数据库名称
+     */
+    databaseName: "data-view",
+    /**
+     * 数据库版本号
+     */
+    databaseVersion: 1,
+    /**
+     * 实例对象名称
+     */
+    storeObjectName: "data-store",
+    /**
+     * 唯一 key
+     */
+    storeObjectId: "data-view-key"
   };
 
   let transaction: IDBTransaction | null = null;
@@ -15,8 +27,8 @@ export function workerScriptBody(): void {
 
   // 创建一个连接到数据库的实例
   const idbRequest: IDBOpenDBRequest = indexedDB.open(
-    user.databaseName /* 打开的数据库 */,
-    user.databaseVersion /* 数据库版本 */
+    databaseUser.databaseName /* 打开的数据库 */,
+    databaseUser.databaseVersion /* 数据库版本 */
   );
 
   idbRequest.onerror = (): void => {
@@ -25,13 +37,12 @@ export function workerScriptBody(): void {
 
   idbRequest.onupgradeneeded = (): void => {
     database = idbRequest.result;
-
-    /* 创建数据库 */
+    // 创建数据库
     database.createObjectStore(
-      user.storeObjectName, // 数据库对象名称(有点类似表)
+      databaseUser.storeObjectName, // 数据库对象名
       {
         keyPath: "id" /* 主键名称 */,
-        autoIncrement: false /* 关闭主键自动递增 */,
+        autoIncrement: false /* 关闭主键自增 */
       }
     );
   };
@@ -43,12 +54,12 @@ export function workerScriptBody(): void {
   // worker 线程
   self.onmessage = ({ data }: MessageEvent<any>): void => {
     if (database) {
-      transaction = database.transaction(user.storeObjectName, "readwrite");
-      objectStore = transaction.objectStore(user.storeObjectName);
+      transaction = database.transaction(databaseUser.storeObjectName, "readwrite");
+      objectStore = transaction.objectStore(databaseUser.storeObjectName);
       if (objectStore) {
         let query: IDBRequest<IDBValidKey> = objectStore.put({
-          id: user.storeObjectId,
-          data,
+          id: databaseUser.storeObjectId,
+          data
         });
         query.onsuccess = (): void => {
           console.log("更新数据成功; key -->", query.result);
