@@ -1,7 +1,7 @@
 import { CustomCard } from "@/lib/components/CustomCard";
-import { WebComponentBase } from "@/lib/WebComponentBase";
 import { customConfirm } from "@/lib/components/CustomConfirm";
 import { customMessage } from "@/lib/components/CustomMessage";
+import { WebComponentBase } from "@/lib/WebComponentBase";
 
 const templateStr: string = `
 <style>
@@ -69,7 +69,7 @@ const templateStr: string = `
 /**
  * 定义菜单选项里的选项名称
  */
-const enum MenuItemType {
+const enum MENU_ITEM_TYPE {
   /**
    * 添加一个新的卡片实例
    */
@@ -98,7 +98,7 @@ const enum MenuItemType {
   /**
    * 移除所有卡片
    */
-  REMOVE_ALL = "remove-all",
+  REMOVE_ALL = "remove-all"
 }
 
 /**
@@ -109,8 +109,11 @@ const enum MenuItemType {
  */
 export class ContextMenu extends WebComponentBase {
   private container: HTMLElement;
+
   private allItems: NodeListOf<HTMLParagraphElement>;
+
   private dragView: HTMLDivElement;
+
   private cardTarget: CustomCard | null = null;
 
   // 记录点击后经过边界处理的光位置
@@ -119,7 +122,7 @@ export class ContextMenu extends WebComponentBase {
     top: number;
   } = {
     left: 0,
-    top: 0,
+    top: 0
   };
 
   constructor() {
@@ -151,7 +154,6 @@ export class ContextMenu extends WebComponentBase {
 
   /**
    * 添加隐藏自定义菜单的样式
-   * @param ev 鼠标单击产生的事件
    */
   private removeHideClass: (ev: MouseEvent) => void = (ev: MouseEvent): void => {
     ev.preventDefault();
@@ -163,16 +165,14 @@ export class ContextMenu extends WebComponentBase {
 
   /**
    * 鼠标单击菜单选项的对应操作
-   * @param ev 鼠标单击菜单选项按钮事件
    */
   private clickMenuItemHandler: (ev: MouseEvent) => void = (ev: MouseEvent): void => {
     ev.preventDefault();
     ev.stopPropagation();
-    /* 取得点击的目标元素 */
+    // 取得点击的目标元素
     const target: HTMLParagraphElement = ev.target as HTMLParagraphElement;
     switch (target.id) {
-      // 添加新的卡片
-      case MenuItemType.ADD:
+      case MENU_ITEM_TYPE.ADD /* 添加新的卡片 */:
         const newCard: CustomCard = new CustomCard();
         let cardWidth: number = 260,
           cardHeight: number = 70;
@@ -185,23 +185,21 @@ export class ContextMenu extends WebComponentBase {
         if (realTop + cardHeight >= this.dragView.clientHeight) {
           realTop = this.dragView.offsetHeight - cardHeight - 4;
         }
-        newCard.setAttribute("left", realLeft + "px"); // 设置新添加卡片的位置
+        // 设置新添加卡片的位置
+        newCard.setAttribute("left", realLeft + "px");
         newCard.setAttribute("top", realTop + "px");
         this.dragView.appendChild(newCard); // 添加到拖拽视图区域
         break;
-      // 删除当前卡片
-      case MenuItemType.DELETE:
+      case MENU_ITEM_TYPE.DELETE /* 删除当前卡片 */:
         this.cardTarget && this.dragView.removeChild(this.cardTarget);
         break;
-      // 编辑当前卡片
-      case MenuItemType.EDITOR:
+      case MENU_ITEM_TYPE.EDITOR /* 编辑当前卡片 */:
         const editor: HTMLDivElement = this.cardTarget?.shadowRoot?.querySelector(".content")!;
         editor.setAttribute("contenteditable", "true");
         editor.focus(); // 聚焦光标
         document.execCommand("selectAll", true); // 在获取光标后勾选所有的文本内容
         break;
-      // 导出卡片内容
-      case MenuItemType.EXPORT:
+      case MENU_ITEM_TYPE.EXPORT /* 导出卡片内容 */:
         const container: HTMLDivElement = this.cardTarget?.shadowRoot?.querySelector(".container")!;
         let anchor: HTMLAnchorElement | null = document.createElement("a");
         const text: string = container.querySelector(".content")?.textContent || ""; // 获取文本内容
@@ -210,12 +208,10 @@ export class ContextMenu extends WebComponentBase {
         anchor.click(); // 触发点击, 进行导出操作
         anchor = null; //  置空元素
         break;
-      // 打印当前页面
-      case MenuItemType.PRINT:
+      case MENU_ITEM_TYPE.PRINT /* 打印当前页面  */:
         queueMicrotask(print);
         break;
-      // 删除所有卡片
-      case MenuItemType.REMOVE_ALL:
+      case MENU_ITEM_TYPE.REMOVE_ALL /* 删除所有卡片 */:
         customConfirm
           .confirm("您确定删除所有卡片(这将没办法恢复)?")
           .then((): void => {
@@ -235,7 +231,6 @@ export class ContextMenu extends WebComponentBase {
 
   /**
    * 鼠标右键事件处理
-   * @param ev 鼠标点击右键触发的事件信息
    */
   private contextMenuHandler: (ev: MouseEvent) => void = (ev: MouseEvent): void => {
     ev.preventDefault();
@@ -254,7 +249,7 @@ export class ContextMenu extends WebComponentBase {
     if (isCustomCardInstance) {
       this.allItems.forEach((p: HTMLParagraphElement): void => {
         // 目标为卡片实例时不显示 "添加", "打印", "删除所有节点" 选项
-        if (p.id !== MenuItemType.ADD && p.id !== MenuItemType.PRINT && p.id !== MenuItemType.REMOVE_ALL) {
+        if (p.id !== MENU_ITEM_TYPE.ADD && p.id !== MENU_ITEM_TYPE.PRINT && p.id !== MENU_ITEM_TYPE.REMOVE_ALL) {
           p.classList.remove("hide");
         }
       });
@@ -263,18 +258,20 @@ export class ContextMenu extends WebComponentBase {
     else {
       // 目标不为卡片实例时显示 "添加", "打印" 和 "删除所有卡片" 选项
       this.allItems.forEach((p: HTMLParagraphElement): void => {
-        if (p.id === MenuItemType.ADD || p.id === MenuItemType.PRINT || p.id === MenuItemType.REMOVE_ALL) {
+        if (p.id === MENU_ITEM_TYPE.ADD || p.id === MENU_ITEM_TYPE.PRINT || p.id === MENU_ITEM_TYPE.REMOVE_ALL) {
           p.removeAttribute("class");
         }
       });
     }
 
-    // 右键菜单的宽高值
+    // 获取自定义菜单容器的宽高值
     const menuWidth: number = this.container.offsetWidth;
     const menuHeight: number = this.container.offsetHeight;
+
     // 取得父级容器的宽高
     const activeViewWidth: number = this.dragView.offsetWidth;
     const activeViewHeight: number = this.dragView.offsetHeight;
+
     // 边界处理
     let neededLeft: number = ev.offsetX;
     let neededTop: number = ev.offsetY;

@@ -1,4 +1,8 @@
 import { WebComponentBase } from "../WebComponentBase";
+
+/**
+ * 弹窗消息类型
+ */
 export type MessageType = "info" | "danger" | "warning" | "success";
 
 const templateStr = `
@@ -92,11 +96,11 @@ const templateStr = `
 `;
 export class CustomMessage extends WebComponentBase {
   static {
-    // 自动注册
     customElements.define("custom-message", CustomMessage);
   }
 
   private container: HTMLDivElement | null = null;
+
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -104,6 +108,11 @@ export class CustomMessage extends WebComponentBase {
     this.container = this.shadowRoot!.querySelector(".__wrapper")!;
   }
 
+  /**
+   * 自定义消息提示
+   * @param title 标题
+   * @param type 提示类型
+   */
   public message(title: string = "", type: MessageType = "info"): void {
     const elMessage: HTMLDivElement = document.createElement("div");
     elMessage.setAttribute("class", "message");

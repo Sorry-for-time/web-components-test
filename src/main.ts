@@ -1,26 +1,27 @@
-import "@/scss/base.scss";
+import { worker } from "@/config/createWorkerThread";
+import { databaseUser } from "@/config/databaseUserConfig";
 import "@/config/registerComponent";
 import { customConfirm } from "@/lib/components/CustomConfirm";
 import { customMessage, MessageType } from "@/lib/components/CustomMessage";
-import { useSwitchTheme, useResetToDefaultTheme } from "@/ui-operation/switch-theme";
+import "@/scss/base.scss";
+import { useResetToDefaultTheme, useSwitchTheme } from "@/ui-operation/switch-theme";
 import { useTypewriterEffect } from "@/ui-operation/typewriter-effect";
-import { debounce, throttle } from "@/utils/performanceUtil";
-import { worker } from "@/config/createWorkerThread";
-import { databaseUser } from "@/config/databaseUserConfig";
+import { CommonToolCollection } from "./utils/CommonToolCollection";
 
 window.addEventListener("load", (): void => {
   useTypewriterEffect();
+
   document.body.appendChild(customConfirm);
   document.body.appendChild(customMessage);
 
   // 创建监听实例对象用于监听节点的属性变化
   const dragViewObserver = new MutationObserver(
-    // 节点属性发送变化就通过 webworker 线程将新节点字符串推入 IndexedDB 数据库当中
-    debounce(
+    // 节点属性发送变化就将新节点字符串推入 IndexedDB 数据库当中
+    CommonToolCollection.debounce(
       (_records: MutationRecord[]): void => {
         worker.postMessage({
           payload: dragView.innerHTML.toString().replaceAll("\n", "").trim(),
-          isResetSignal: false,
+          isResetSignal: false
         });
       },
       true,
@@ -37,7 +38,7 @@ window.addEventListener("load", (): void => {
       subtree: true,
       attributes: true,
       characterData: true,
-      childList: true,
+      childList: true
     });
   }
 
@@ -62,7 +63,7 @@ window.addEventListener("load", (): void => {
         databaseUser.storeObjectName, // 数据库实例对象名称(有点类似表)
         {
           keyPath: "id" /* 主键名称 */,
-          autoIncrement: false /* 关闭主键自动递增 */,
+          autoIncrement: false /* 关闭主键自动递增 */
         }
       );
     };
@@ -126,7 +127,7 @@ window.addEventListener("load", (): void => {
       .then((): void => {
         worker.postMessage({
           payload: "",
-          isResetSignal: true,
+          isResetSignal: true
         });
         window.location.reload();
       })
@@ -138,7 +139,7 @@ window.addEventListener("load", (): void => {
   const messageBtn: HTMLButtonElement = document.querySelector("#send-message")!;
   messageBtn.addEventListener(
     "click",
-    throttle(
+    CommonToolCollection.throttle(
       (): void => {
         customMessage.message(
           crypto.randomUUID().substring(12),

@@ -6,14 +6,11 @@ const enum THEMES {
   "dark" = "dark-theme",
   "special" = "special-theme",
   "gray" = "gray-theme",
-  "slogan" = "slogan-theme",
+  "slogan" = "slogan-theme"
 }
 
 /**
- * @description 切换主题样式
- * @author Shalling <3330689546@qq.com>
- * @date 2022-11-27 21:11:03
- * @export
+ * 切换主题样式
  */
 export function useSwitchTheme(): void {
   /* 取得所有的主题颜色切换按钮 */
