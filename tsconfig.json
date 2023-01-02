@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
     "target": "ES2015",
+    "declaration": false,
+    "noImplicitAny": true,
+    "removeComments": true,
     "useDefineForClassFields": true,
+    "allowSyntheticDefaultImports": true,
     "module": "ESNext",
     "lib": ["ESNext", "DOM", "WebWorker"],
     "moduleResolution": "Node",
     "strict": true,
+    "noLib": false,
+    "sourceMap": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "isolatedModules": true,
@@ -15,10 +21,12 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist/**"]
 }
