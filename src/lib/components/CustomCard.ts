@@ -8,24 +8,21 @@ const templateStr: string = `
   .container {
     --title-height: 26px;
     position: absolute;
-
     display: block;
     width: 260px;
-    max-height: 500px;
-    overflow: auto;
-    height: auto;
-    border-radius: 6px;
     overflow: hidden;
+    border-radius: 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.418);
     background: scroll no-repeat center linear-gradient(rgba(0, 255, 255, 0.205), rgba(128, 0, 128, 0.247));
     backdrop-filter: blur(12px);
+    will-change: transform, top, left;
   }
 
   .container .card {
     width: 100%;
-    height: 100%;
+    min-height: 60px;
+    max-height: 600px;
     display: grid;
-    grid-template-columns: 1fr;
     grid-template-rows: var(--title-height) calc(100% - var(--title-height));
   }
 
@@ -34,11 +31,7 @@ const templateStr: string = `
     align-items: center;
     justify-content: center;
     background: scroll no-repeat center
-      linear-gradient(
-        23deg,
-        rgba(194, 115, 197, 0.589),
-        rgba(68, 96, 223, 0.582)
-      );
+      linear-gradient(23deg, rgba(194, 115, 197, 0.589), rgba(68, 96, 223, 0.582));
     backdrop-filter: blur(12px);
   }
 
@@ -51,33 +44,44 @@ const templateStr: string = `
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.2) inset;
   }
 
-  .content {
-    min-height: 24px;
+  .content-wrapper {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  .content-wrapper::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background: hsla(0, 0%, 35%, 0.5);
+  }
+
+  .content-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(161, 160, 167, 0.555);
+  }
+
+  .content-wrapper .content {
     font-size: 18px;
-    padding: 10px;
+    margin: 10px;
     user-select: none;
     color: transparent;
-    will-change: transform, top, left;
-    background: scroll no-repeat center
-      linear-gradient(
-        109deg,
-        rgba(61, 245, 167, 1) 11.2%,
-        rgba(9, 111, 224, 1) 91.1%
-      );
+    background: scroll no-repeat center linear-gradient(109deg, rgb(48, 212, 144) 11.2%, rgb(54, 140, 238) 91.1%);
     font-weight: 600;
     background-clip: text;
     -webkit-background-clip: text;
     animation: scroll-color 5s linear infinite;
   }
 
-  .content:focus-within {
+  .content-wrapper .content:focus-within {
     caret-color: white;
     outline: none;
     background: rgba(39, 39, 39, 0.616);
     color: rgb(230, 230, 230);
     animation: none;
-    background-clip: none;
-    -webkit-background-clip: none;
+    background-clip: unset;
+    -webkit-background-clip: unset;
   }
 
   @keyframes scroll-color {
@@ -93,10 +97,13 @@ const templateStr: string = `
 <div class="container">
   <div class="card">
     <div class="title">
-      <span class="drag-hint"><span>
+      <span class="drag-hint"></span>
     </div>
-    <div class="content">
-      <slot></slot>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </div>
