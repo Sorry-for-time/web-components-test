@@ -29,9 +29,7 @@
 
 .normal-theme,
 .dark-theme,
-.gray-theme,
-.slogan-theme,
-.special-theme {
+.gray-theme {
   transition: all 200ms ease-out;
 }
 
@@ -52,29 +50,6 @@
   main {
     background-size: cover;
     background: scroll no-repeat center url("/img/dark.png");
-  }
-}
-
-// 小组主题
-.slogan-theme {
-  background: var(--slogan-mode-bgc);
-
-  main {
-    animation: change-bgc 5s linear infinite;
-    background: scroll no-repeat center url("/img/slogan.jpg");
-    background-size: cover;
-    filter: brightness(1.05);
-  }
-}
-
-// 动漫主题
-.special-theme {
-  background: var(--special-mode-bgc);
-
-  main {
-    animation: change-bgc 5s linear infinite;
-    background: scroll no-repeat center url("/img/special.jpg");
-    background-size: cover;
   }
 }
 
