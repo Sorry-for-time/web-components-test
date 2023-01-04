@@ -65,6 +65,7 @@ const templateStr: string = `
   .content-wrapper .content {
     font-size: 18px;
     margin: 10px;
+    min-height: 20px;
     user-select: none;
     color: transparent;
     background: scroll no-repeat center linear-gradient(109deg, rgb(48, 212, 144) 11.2%, rgb(54, 140, 238) 91.1%);
