@@ -1,5 +1,12 @@
 # PROJECT: web-components-test
 
+## LAST MAJOR COMMIT DETAIL
+
+- 主要调整样式
+- 移除除部分主体
+- 为卡片添加滚动条
+- 为卡片拖拽标题添加提示样式
+
 ## Features
 
 - 基于原生 `WebComponent` 实现可拖拽编辑自定义卡片组件
@@ -46,6 +53,8 @@
 
 ## 简单的图片展示说明
 
+- 整体效果
+  <img src="./.assets/exhibition.png" width="100%" />
 - 自定义菜单(在卡片上时)
   <img src="./.assets/menu2.png" width="100%" />
 - 自定义菜单(在卡片外)
