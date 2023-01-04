@@ -1,4 +1,4 @@
-import { workerScriptBody } from "@/worker-script/indexedDB-store-worker";
+import { workerScriptBody } from "@/worker-script/IndexedDB-store-worker";
 
 /**
  * 获取原始工作者线程函数整体字符串
