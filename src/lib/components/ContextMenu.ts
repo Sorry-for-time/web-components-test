@@ -1,7 +1,7 @@
 import { CustomCard } from "@/lib/components/CustomCard";
 import { customConfirm } from "@/lib/components/CustomConfirm";
 import { customMessage } from "@/lib/components/CustomMessage";
-import { WebComponentBuiltInHooksDefine } from "../interface/WebComponentBuiltInHooksDefine";
+import { WebComponentBuiltInHooksDefine } from "@/lib/interface/WebComponentBuiltInHooksDefine";
 
 const templateStr: string = `
 <style>

@@ -1,4 +1,4 @@
-import { WebComponentBuiltInHooksDefine } from "../interface/WebComponentBuiltInHooksDefine";
+import { WebComponentBuiltInHooksDefine } from "@/lib/interface/WebComponentBuiltInHooksDefine";
 const templateStr: string = `
 <style>
   .active {
