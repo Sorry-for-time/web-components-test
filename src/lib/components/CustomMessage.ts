@@ -1,5 +1,3 @@
-import { WebComponentBase } from "../WebComponentBase";
-
 /**
  * 弹窗消息类型
  */
@@ -94,7 +92,7 @@ const templateStr = `
 </style>
 <div class="__wrapper"></div>
 `;
-export class CustomMessage extends WebComponentBase {
+export class CustomMessage extends HTMLElement {
   static {
     customElements.define("custom-message", CustomMessage);
   }

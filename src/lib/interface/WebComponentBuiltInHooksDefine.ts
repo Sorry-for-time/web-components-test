@@ -1,11 +1,7 @@
 /**
- * 接口函数预设
- * @author Shalling <3330689546@qq.com>
- * @date 2022-11-29 10:11:47
- * @export
- * @interface WebComponentDefine
+ * 原生 web 组件内部生命周期函数定义
  */
-export interface WebComponentDefine {
+export interface WebComponentBuiltInHooksDefine {
   /**
    * 组件挂载到真实页面上时触发的回调
    */

@@ -1,4 +1,3 @@
-import { WebComponentBase } from "@/lib/WebComponentBase";
 const templateStr: string = `
 <style>
   .__container {
@@ -86,7 +85,7 @@ const templateStr: string = `
   </div>
 `;
 
-export class CustomConfirm extends WebComponentBase {
+export class CustomConfirm extends HTMLElement {
   private container: HTMLDivElement | null = null;
 
   private confirmButton: HTMLButtonElement | null;

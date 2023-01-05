@@ -1,4 +1,4 @@
-import { WebComponentBase } from "@/lib/WebComponentBase";
+import { WebComponentBuiltInHooksDefine } from "../interface/WebComponentBuiltInHooksDefine";
 const templateStr: string = `
 <style>
   .active {
@@ -120,7 +120,7 @@ type MouseOperationType = (ev: MouseEvent) => unknown;
 /**
  * 自定义卡片组件
  */
-export class CustomCard extends HTMLElement implements WebComponentBase {
+export class CustomCard extends HTMLElement implements WebComponentBuiltInHooksDefine {
   /**
    * 自定义组件模板字符串
    */
