@@ -57,12 +57,12 @@ const templateStr: string = `
 
   <!-- 菜单按钮 -->
   <div class="wrapper hide">
-  <p id="add">添加</p>
-  <p id="editor">编辑</p>
-  <p id="delete">删除</p>
-  <p id="export">导出内容</p>
-  <p id="remove-all">删除所有卡片</p>
-  <p id="print">打印当前页面</p>
+    <p id="add">添加</p>
+    <p id="editor">编辑</p>
+    <p id="delete">删除</p>
+    <p id="export">导出内容</p>
+    <p id="remove-all">删除所有卡片</p>
+    <p id="print">打印当前页面</p>
   </div>
 `;
 

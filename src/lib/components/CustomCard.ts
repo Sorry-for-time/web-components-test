@@ -55,11 +55,13 @@ const templateStr: string = `
   .content-wrapper::-webkit-scrollbar {
     width: 10px;
     height: 10px;
-    background: hsla(0, 0%, 35%, 0.5);
+    background: hsla(0, 0%, 55%, 0.5);
   }
 
   .content-wrapper::-webkit-scrollbar-thumb {
-    background: rgba(161, 160, 167, 0.555);
+    background: hsla(0, 0%, 100%, 0.3);
+    border: 3px solid hsla(0, 0%, 100%, 0.5);
+    border-radius: 4px;
   }
 
   .content-wrapper .content {
@@ -113,7 +115,7 @@ const templateStr: string = `
 /**
  * 鼠标相关回调事件类型定义
  */
-type MOUSE_OPERATION = (ev: MouseEvent) => void;
+type MouseOperationType = (ev: MouseEvent) => unknown;
 
 /**
  * 自定义卡片组件
@@ -130,7 +132,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   private container: HTMLElement;
 
   /**
-   * 卡片进行拖标签标题
+   * 允许进行拖拽的区域(窗口标题区域)
    */
   private titleEl: HTMLElement;
 
@@ -142,7 +144,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   /**
    * 鼠标抬起监听函数引用
    */
-  private mouseUpHandlerLink: MOUSE_OPERATION | null = null;
+  private mouseUpHandlerLink: MouseOperationType | null = null;
 
   /**
    * 每个实例自身的唯一标识符
@@ -232,7 +234,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
    * 鼠标主键按下操作
    * @param ev 鼠标主键按下事件
    */
-  private mouseDownHandler: MOUSE_OPERATION = (ev: MouseEvent): void => {
+  private mouseDownHandler: MouseOperationType = (ev: MouseEvent): void => {
     // 设置卡片选中置顶显示
     if (this.parentElement?.lastElementChild !== this) {
       this.parentElement?.appendChild(this);
@@ -244,7 +246,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
     const substrateX: number = ev.clientX - this.container.offsetLeft;
     const substrateY: number = ev.clientY - this.container.offsetTop;
 
-    const mouseMoveAction: MOUSE_OPERATION = (mv: MouseEvent): void => {
+    const mouseMoveAction: MouseOperationType = (mv: MouseEvent): void => {
       ev.preventDefault();
       ev.stopPropagation();
 
@@ -287,7 +289,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   /**
    * 卡片编辑区域双击时设置可编辑状态
    */
-  private textEditorInput: MOUSE_OPERATION = (ev: MouseEvent): void => {
+  private textEditorInput: MouseOperationType = (ev: MouseEvent): void => {
     ev.preventDefault();
     ev.stopPropagation();
     this.textEditor.setAttribute("contenteditable", "true");
@@ -297,7 +299,7 @@ export class CustomCard extends HTMLElement implements WebComponentBase {
   /**
    * 设置当前元素的显示的优先级为最高
    */
-  private setCurrentPriorityDisplay: MOUSE_OPERATION = (ev: MouseEvent): void => {
+  private setCurrentPriorityDisplay: MouseOperationType = (ev: MouseEvent): void => {
     ev.preventDefault();
     ev.stopPropagation();
     // 将点击选中的元素移动到父容器的末尾, 实现显示层级上的的优先显示
