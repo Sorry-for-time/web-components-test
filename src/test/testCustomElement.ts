@@ -1,5 +1,5 @@
 import { CustomCard } from "@/lib/components/CustomCard";
-import { CommonToolCollection } from "../utils/CommonToolCollection";
+import { CommonToolCollection } from "@/utils/CommonToolCollection";
 export async function testCustomElement(): Promise<void> {
   const dragView: HTMLDivElement = document.querySelector(".drag-view")!;
   const customCards: Array<CustomCard> = Array.from(document.querySelectorAll("custom-card"));
