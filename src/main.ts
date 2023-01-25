@@ -5,12 +5,9 @@ import { customConfirm } from "@/lib/components/CustomConfirm";
 import { customMessage, MessageType } from "@/lib/components/CustomMessage";
 import "@/scss/base.scss";
 import { useResetToDefaultTheme, useSwitchTheme } from "@/ui-operation/switch-theme";
-import { useTypewriterEffect } from "@/ui-operation/typewriter-effect";
 import { CommonToolCollection } from "./utils/CommonToolCollection";
 
 window.addEventListener("load", (): void => {
-  useTypewriterEffect();
-
   document.body.appendChild(customConfirm);
   document.body.appendChild(customMessage);
 
