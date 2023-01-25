@@ -1,116 +1,10 @@
 import { WebComponentBuiltInHooksDefine } from "@/lib/interface/WebComponentBuiltInHooksDefine";
-const templateStr: string = `
-<style>
-  .active {
-    cursor: move;
-  }
 
-  .container {
-    --title-height: 26px;
-    position: absolute;
-    display: block;
-    width: 260px;
-    overflow: hidden;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.418);
-    background: scroll no-repeat center linear-gradient(rgba(0, 255, 255, 0.205), rgba(128, 0, 128, 0.247));
-    backdrop-filter: blur(12px);
-    will-change: transform, top, left;
-  }
-
-  .container .card {
-    width: 100%;
-    min-height: 60px;
-    max-height: 600px;
-    display: grid;
-    grid-template-rows: var(--title-height) calc(100% - var(--title-height));
-  }
-
-  .title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: scroll no-repeat center
-      linear-gradient(23deg, rgba(194, 115, 197, 0.589), rgba(68, 96, 223, 0.582));
-    backdrop-filter: blur(12px);
-  }
-
-  .title .drag-hint {
-    box-sizing: border-box;
-    width: 40%;
-    height: 8px;
-    background: hsl(212deg 65% 25% / 47%);
-    border-radius: 4px;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2) inset;
-  }
-
-  .content-wrapper {
-    height: 100%;
-    width: 100%;
-    overflow: auto;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-  }
-
-  .content-wrapper::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-    background: hsla(0, 0%, 55%, 0.5);
-  }
-
-  .content-wrapper::-webkit-scrollbar-thumb {
-    background: hsla(0, 0%, 100%, 0.3);
-    border: 3px solid hsla(0, 0%, 100%, 0.5);
-    border-radius: 4px;
-  }
-
-  .content-wrapper .content {
-    font-size: 18px;
-    margin: 10px;
-    min-height: 20px;
-    user-select: none;
-    color: transparent;
-    background: scroll no-repeat center linear-gradient(109deg, rgb(48, 212, 144) 11.2%, rgb(54, 140, 238) 91.1%);
-    font-weight: 600;
-    background-clip: text;
-    -webkit-background-clip: text;
-    animation: scroll-color 5s linear infinite;
-  }
-
-  .content-wrapper .content:focus-within {
-    caret-color: white;
-    outline: none;
-    background: rgba(39, 39, 39, 0.616);
-    color: rgb(230, 230, 230);
-    animation: none;
-    background-clip: unset;
-    -webkit-background-clip: unset;
-  }
-
-  @keyframes scroll-color {
-    from {
-      filter: hue-rotate(0deg);
-    }
-    to {
-      filter: hue-rotate(360deg);
-    }
-  }
-</style>
-
-<div class="container">
-  <div class="card">
-    <div class="title">
-      <span class="drag-hint"></span>
-    </div>
-
-    <div class="content-wrapper">
-      <div class="content">
-        <slot></slot>
-      </div>
-    </div>
-  </div>
-</div>
-`;
+const template: string = import.meta.glob("/src/templates/CustomCard.html", {
+  eager: true,
+  as: "raw",
+  import: "default"
+})["/src/templates/CustomCard.html"];
 
 /**
  * 鼠标相关回调事件类型定义
@@ -124,7 +18,7 @@ export class CustomCard extends HTMLElement implements WebComponentBuiltInHooksD
   /**
    * 自定义组件模板字符串
    */
-  private static componentStr: string = templateStr.replaceAll("\n", "").trim();
+  private static componentStr: string = template;
 
   /**
    * 自定义 web 组件容器
@@ -183,7 +77,6 @@ export class CustomCard extends HTMLElement implements WebComponentBuiltInHooksD
     this.textEditor = this.shadowRoot?.querySelector(".content")!;
     // 创建内部标签, 元素为自定义卡片内的内容
     this.textEditor.innerHTML = this.innerHTML.toString();
-
     // 记录创建耗时
     this._createCostTime = performance.now() - this._createCostTime;
   }

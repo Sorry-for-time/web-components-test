@@ -3,68 +3,11 @@ import { customConfirm } from "@/lib/components/CustomConfirm";
 import { customMessage } from "@/lib/components/CustomMessage";
 import { WebComponentBuiltInHooksDefine } from "@/lib/interface/WebComponentBuiltInHooksDefine";
 
-const templateStr: string = `
-<style>
-  .wrapper {
-    --text-color: hsl(0, 0%, 100%);
-    overflow: hidden;
-
-    box-sizing: border-box;
-    user-select: none;
-    z-index: 23;
-    position: absolute;
-    width: 240px;
-    will-change: transform;
-    border-radius: 12px;
-    box-shadow: 0 0 4px hsla(0, 0%, 19%, 0.484), 0 0 4px 1px hsla(0, 0%, 19%, 0.684) inset;
-    border: 1px solid hsla(0, 0%, 100%, 0.1);
-    background-color: hsla(0, 0%, 19%, 0.184);
-    backdrop-filter: blur(12px);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .wrapper.hide {
-    z-index: -1;
-    transition: all 180ms ease-out;
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  p.hide {
-    display: none;
-  }
-
-  p {
-    flex: 100%;
-    margin: 3px;
-    padding: 4px 8px;
-    color: var(--text-color);
-    border-radius: 5px;
-    transition: 120ms ease-out;
-  }
-
-  P:nth-child(3) {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.205);
-  }
-
-  p:hover {
-    background-color: rgba(240, 248, 255, 0.16);
-    text-shadow: 0 0 3px black;
-  }
-  </style>
-
-  <!-- 菜单按钮 -->
-  <div class="wrapper hide">
-    <p id="add">添加</p>
-    <p id="editor">编辑</p>
-    <p id="delete">删除</p>
-    <p id="export">导出内容</p>
-    <p id="remove-all">删除所有卡片</p>
-    <p id="print">打印当前页面</p>
-  </div>
-`;
+const template: string = import.meta.glob("/src/templates/ContextMenu.html", {
+  as: "raw",
+  eager: true,
+  import: "default"
+})["/src/templates/ContextMenu.html"];
 
 /**
  * 定义菜单选项里的选项名称
@@ -108,6 +51,8 @@ const enum MenuItemType {
  * @extends {HTMLElement}
  */
 export class ContextMenu extends HTMLElement implements WebComponentBuiltInHooksDefine {
+  private static readonly componentStr: string = template;
+
   private container: HTMLElement;
 
   private allItems: NodeListOf<HTMLParagraphElement>;
@@ -127,7 +72,7 @@ export class ContextMenu extends HTMLElement implements WebComponentBuiltInHooks
 
   constructor() {
     super();
-    this.attachShadow({ mode: "open" }).innerHTML = templateStr;
+    this.attachShadow({ mode: "open" }).innerHTML = ContextMenu.componentStr;
 
     this.container = this.shadowRoot?.querySelector(".wrapper")!;
     this.allItems = this.shadowRoot?.querySelectorAll("p")!;

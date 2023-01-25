@@ -1,0 +1,87 @@
+<style>
+  .__wrapper {
+    --info: hsl(220, 4%, 58%);
+    --success: hsl(100, 54%, 49%);
+    --waning: hsl(36, 77%, 57%);
+    --danger: hsl(0, 87%, 69%);
+
+    --info-bgc: hsla(180, 3%, 13%, 0.808);
+    --success-bgc: hsla(102, 21%, 12%, 0.808);
+    --waning-bgc: hsla(35, 25%, 13%, 0.808);
+    --danger-bgc: hsla(0, 18%, 14%, 0.808);
+
+    z-index: 12;
+    position: absolute;
+    width: 400px;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    user-select: none;
+  }
+
+  .message {
+    margin-top: 10px;
+    width: 100%;
+    min-height: 45px;
+    border-radius: 8px;
+    box-shadow: 0 0 3px hsla(0, 0%, 0%, 0.233);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fade-in 300ms ease-out forwards;
+    transform-origin: top center;
+    backdrop-filter: blur(12px);
+  }
+
+  @keyframes fade-in {
+    0% {
+      transform: scaleY(0);
+      opacity: 0.6;
+    }
+    40% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+
+  .message.info {
+    color: var(--info);
+    border: 1px solid var(--info);
+    background: var(--info-bgc);
+  }
+  .message.success {
+    color: var(--success);
+    border: 1px solid var(--success);
+    background: var(--success-bgc);
+  }
+  .message.warning {
+    color: var(--waning);
+    border: 1px solid var(--waning);
+    background: var(--waning-bgc);
+  }
+  .message.danger {
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    background: var(--danger-bgc);
+  }
+  .message .title {
+    color: hsl(0, 0%, 23%);
+    font-size: 18px;
+  }
+  .message.hide {
+    transform-origin: top center;
+    animation: fade-leave 580ms ease-in forwards 1200ms;
+  }
+
+  @keyframes fade-leave {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0.2;
+      transform: scale(0.3);
+    }
+  }
+</style>
+<div class="__wrapper"></div>
