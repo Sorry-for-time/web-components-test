@@ -9,6 +9,12 @@
 
 ## Features
 
+### CURRENT(2023/01/25)
+
+- `latest` 使用 `vite` 的静态资源导入功能, 实现模板分离, 便于管理
+
+### PREV
+
 - 基于原生 `WebComponent` 实现可拖拽编辑自定义卡片组件
   - 组合 transform 的拖拽
   - 实现 css, 变量等属性隔离, 封装隐藏具体操作
